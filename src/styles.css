@@ -1136,6 +1136,7 @@ a:focus-visible {
 .feature-diagnosis-card,
 .feature-profile-card,
 .face-feature-card,
+.skin-tone-card,
 .style-report-card,
 .report-look-card,
 .advice-card,
@@ -1261,6 +1262,110 @@ a:focus-visible {
   font-size: var(--fs-body);
 }
 
+.skin-tone-card {
+  border-radius: 8px;
+  padding: 18px 20px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  overflow: hidden;
+}
+
+.skin-tone-card > h3 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: var(--fs-card-title);
+  line-height: var(--lh-title);
+}
+
+.skin-tone-content {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(190px, 0.72fr) minmax(0, 1.25fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.skin-tone-section {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  align-self: start;
+  grid-template-rows: auto repeat(3, 30px);
+  gap: 8px;
+}
+
+.skin-tone-section h4 {
+  margin: 0;
+  line-height: var(--lh-title);
+}
+
+.skin-tone-section h4 {
+  font-size: var(--fs-body);
+  font-weight: 850;
+  color: var(--brand);
+}
+
+.skin-tone-section p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: var(--fs-small);
+  line-height: 1.42;
+}
+
+.skin-info-row {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 8px;
+  align-items: center;
+  min-height: 0;
+}
+
+.skin-info-row b {
+  color: var(--text-main);
+  font-size: inherit;
+}
+
+.skin-info-row span {
+  min-width: 0;
+}
+
+.skin-color-row {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 10px;
+  align-items: center;
+  min-height: 0;
+}
+
+.skin-color-row b {
+  color: var(--text-main);
+  font-size: var(--fs-small);
+}
+
+.skin-color-row div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  align-items: center;
+}
+
+.skin-tone-colors {
+  padding-bottom: 8px;
+}
+
+.skin-color-chip {
+  height: 24px;
+  min-height: 0;
+  border-radius: 6px;
+  background: var(--swatch);
+  color: #fff;
+  border: 1px solid var(--control-line);
+  display: grid;
+  place-items: center;
+  padding: 4px;
+}
+
 .style-report-card {
   border-radius: 8px;
   padding: 22px 26px;
@@ -1384,26 +1489,33 @@ a:focus-visible {
 
 .compact-color-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.style-color-card {
+  min-height: 96px;
+  border-radius: 8px;
+  background: var(--panel-strong);
+  border: 1px solid var(--control-line);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
 }
 
 .compact-color-swatch {
   min-height: 58px;
-  border-radius: 6px;
   background: var(--swatch);
-  color: #fff;
-  border: 1px solid var(--control-line);
-  display: flex;
-  align-items: end;
-  justify-content: center;
-  padding: 10px;
-  font-weight: 800;
-  font-size: var(--fs-body);
+  border-bottom: 1px solid var(--control-line);
+  display: block;
 }
 
-.compact-color-swatch.dark-text {
+.style-color-card b {
+  padding: 8px 10px;
   color: var(--text-main);
+  font-size: var(--fs-small);
+  line-height: var(--lh-title);
+  text-align: center;
 }
 
 .report-look-grid {
@@ -3740,6 +3852,7 @@ a:focus-visible {
 
   .feature-card-copy h3,
   .face-feature-card h3,
+  .skin-tone-section h3,
   .style-core-list h3,
   .style-color-panel h3,
   .occasion-box > b,
@@ -3752,6 +3865,7 @@ a:focus-visible {
   .feature-card-copy p,
   .face-feature-card p,
   .face-feature-card b,
+  .skin-tone-section p,
   .style-core-row p,
   .occasion-box p,
   .style-color-panel p,
@@ -3768,6 +3882,53 @@ a:focus-visible {
   .face-feature-card {
     padding: 30px 34px;
     gap: 16px;
+  }
+
+  .skin-tone-card {
+    padding: 30px 34px;
+    gap: 22px;
+  }
+
+  .skin-tone-card > h3 {
+    font-size: 30px;
+    line-height: 1.28;
+  }
+
+  .skin-tone-content {
+    gap: 34px;
+    grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.7fr) minmax(0, 1.32fr);
+    align-items: start;
+  }
+
+  .skin-tone-section {
+    grid-template-rows: auto repeat(3, 46px);
+    gap: 12px;
+  }
+
+  .skin-tone-section h4 {
+    font-size: 24px;
+  }
+
+  .skin-info-row {
+    grid-template-columns: 68px 1fr;
+    gap: 14px;
+  }
+
+  .skin-color-row {
+    grid-template-columns: 64px 1fr;
+    gap: 14px;
+  }
+
+  .skin-color-row b {
+    font-size: 22px;
+  }
+
+  .skin-color-row div {
+    gap: 10px;
+  }
+
+  .skin-color-chip {
+    height: 38px;
   }
 
   .style-report-card {
@@ -3815,9 +3976,17 @@ a:focus-visible {
     gap: 18px;
   }
 
+  .style-color-card {
+    min-height: 156px;
+  }
+
   .compact-color-swatch {
-    min-height: 96px;
-    font-size: 22px;
+    min-height: 112px;
+  }
+
+  .style-color-card b {
+    padding: 12px 14px;
+    font-size: 24px;
   }
 
   .occasion-box {

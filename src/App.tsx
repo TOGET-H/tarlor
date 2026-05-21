@@ -61,11 +61,26 @@ interface FeatureProfileData {
   points: string[];
 }
 
-interface FaceFeatureData {
-  tone: 'sense' | 'motion' | 'curve';
+interface SkinColor {
+  name: string;
+  value: string;
+  darkText?: boolean;
+}
+
+interface SkinToneData {
   title: string;
-  text: string;
-  fit: string;
+  traits: {
+    label: string;
+    value: string;
+  }[];
+  rules: {
+    label: string;
+    value: string;
+  }[];
+  colorGroups: {
+    label: string;
+    colors: SkinColor[];
+  }[];
 }
 
 interface ReportLookDetail {
@@ -324,12 +339,10 @@ const reportStyleElements = [
 ];
 
 const reportColors = [
-  { name: '奶茶色', value: '#D4B483', darkText: false },
-  { name: '雾霾蓝', value: '#BFD7EA', darkText: true },
-  { name: '米白色', value: '#F9F7F4', darkText: true },
-  { name: '浅粉色', value: '#F8C8DC', darkText: true },
-  { name: '薄荷绿', value: '#C1E1C1', darkText: true },
-  { name: '深棕色', value: '#5A5553', darkText: false }
+  { name: '浅灰', value: '#D8D8D2', darkText: true },
+  { name: '卡其', value: '#C8B48D', darkText: true },
+  { name: '浅蓝', value: '#BFD7EA', darkText: true },
+  { name: '米白', value: '#F9F7F4', darkText: true }
 ];
 
 const avoidItems = [
@@ -361,26 +374,45 @@ const featureProfileCards: FeatureProfileData[] = [
   }
 ];
 
-const faceFeatureCards: FaceFeatureData[] = [
-  {
-    tone: 'sense',
-    title: '量感：小量感',
-    text: '五官整体小巧，眼型偏圆，鼻头小巧，面部骨骼感弱，留白较多，视觉上显轻盈、年轻。',
-    fit: '轻薄面料 / 小巧配饰'
-  },
-  {
-    tone: 'motion',
-    title: '动静：动态型',
-    text: '五官线条带轻微弧度，如圆眼、微笑唇，神态灵动，带活泼感，无刻板、沉闷感。',
-    fit: '带细节设计 / 柔和图案'
-  },
-  {
-    tone: 'curve',
-    title: '曲直：曲线型',
-    text: '面部轮廓以曲线为主，圆脸、圆下颌，五官边缘无明显棱角，整体风格偏女性化、柔美。',
-    fit: '圆弧形领口 / 柔软面料'
-  }
-];
+const skinToneProfile: SkinToneData = {
+  title: '肤色：春季型肤色',
+  traits: [
+    { label: '毛发', value: '棕色系' },
+    { label: '眼睛', value: '眼珠呈棕色，眼白略带湖蓝色' },
+    { label: '皮肤', value: '肤色偏白皙，脸颊带有珊瑚粉色红晕' }
+  ],
+  rules: [
+    { label: '明度', value: '中高' },
+    { label: '纯度', value: '中高' },
+    { label: '冷暖', value: '暖色' }
+  ],
+  colorGroups: [
+    {
+      label: '外套',
+      colors: [
+        { name: '浅灰', value: '#D8D8D2', darkText: true },
+        { name: '灰绿', value: '#A8B4A6', darkText: true },
+        { name: '卡其', value: '#C8B48D', darkText: true }
+      ]
+    },
+    {
+      label: '内搭',
+      colors: [
+        { name: '浅蓝', value: '#BFD7EA', darkText: true },
+        { name: '米白', value: '#F9F7F4', darkText: true },
+        { name: '浅绿', value: '#CFE3C3', darkText: true }
+      ]
+    },
+    {
+      label: '点缀',
+      colors: [
+        { name: '薄荷绿', value: '#BFE4D2', darkText: true },
+        { name: '亮黄', value: '#F5D44B', darkText: true },
+        { name: '橙黄', value: '#F0A64A', darkText: true }
+      ]
+    }
+  ]
+};
 
 const reportLookDetails: Record<string, ReportLookDetail[]> = {
   'suit-1': [
@@ -908,11 +940,7 @@ function App() {
                   <FeatureProfileCard card={card} key={card.title} />
                 ))}
               </div>
-              <div className="face-feature-grid">
-                {faceFeatureCards.map((card) => (
-                  <FaceFeatureCard card={card} key={card.title} />
-                ))}
-              </div>
+              <SkinToneCard data={skinToneProfile} />
             </div>
           </section>
 
@@ -943,16 +971,16 @@ function App() {
                     <h3>{t.recommendedColors}</h3>
                     <div className="compact-color-grid">
                       {reportColors.map((color) => (
-                        <div
-                          className={`compact-color-swatch ${color.darkText ? 'dark-text' : ''}`}
-                          key={color.name}
-                          style={{ '--swatch': color.value } as CSSProperties}
-                        >
-                          {color.name}
+                        <div className="style-color-card" key={color.name}>
+                          <span
+                            className="compact-color-swatch"
+                            style={{ '--swatch': color.value } as CSSProperties}
+                            aria-label={color.name}
+                          />
+                          <b>{color.name}</b>
                         </div>
                       ))}
                     </div>
-                    <p>{t.colorRule}</p>
                   </div>
                 </div>
                 <div className="occasion-box">
@@ -1186,12 +1214,49 @@ function FeatureProfileCard({ card }: { card: FeatureProfileData }) {
   );
 }
 
-function FaceFeatureCard({ card }: { card: FaceFeatureData }) {
+function SkinToneCard({ data }: { data: SkinToneData }) {
   return (
-    <article className={`face-feature-card ${card.tone}`}>
-      <h3>{card.title}</h3>
-      <p>{card.text}</p>
-      <b>适配：{card.fit}</b>
+    <article className="skin-tone-card">
+      <h3>{data.title}</h3>
+      <div className="skin-tone-content">
+        <div className="skin-tone-section skin-tone-summary">
+          <h4>人体色特征</h4>
+          {data.traits.map((trait) => (
+            <p className="skin-info-row" key={trait.label}>
+              <b>{trait.label}</b>
+              <span>{trait.value}</span>
+            </p>
+          ))}
+        </div>
+        <div className="skin-tone-section">
+          <h4>色彩适配原则</h4>
+          {data.rules.map((rule) => (
+            <p className="skin-info-row" key={rule.label}>
+              <b>{rule.label}</b>
+              <span>{rule.value}</span>
+            </p>
+          ))}
+        </div>
+        <div className="skin-tone-section skin-tone-colors">
+          <h4>推荐用色</h4>
+          {data.colorGroups.map((group) => (
+            <div className="skin-color-row" key={group.label}>
+              <b>{group.label}</b>
+              <div>
+                {group.colors.map((color) => (
+                  <span
+                    className="skin-color-chip"
+                    key={`${group.label}-${color.name}`}
+                    style={{ '--swatch': color.value } as CSSProperties}
+                    aria-label={color.name}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </article>
   );
 }
