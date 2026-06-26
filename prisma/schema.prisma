@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model TarotCard {
+  id              Int           @id @default(autoincrement())
+  name            String        @unique
+  arcana          String
+  suit            String?
+  number          String?
+  uprightMeaning  String
+  reversedMeaning String
+  description     String?
+  imageUrl        String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  readingCards    ReadingCard[]
+}
+
+model Reading {
+  id              Int              @id @default(autoincrement())
+  question        String
+  spreadType      String
+  status          String           @default("interpreted")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  cards           ReadingCard[]
+  interpretations Interpretation[]
+}
+
+model ReadingCard {
+  id          Int       @id @default(autoincrement())
+  readingId   Int
+  cardId      Int
+  position    String
+  orientation String
+  sortOrder   Int
+  reading     Reading   @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  card        TarotCard @relation(fields: [cardId], references: [id], onDelete: Restrict)
+}
+
+model Interpretation {
+  id        Int      @id @default(autoincrement())
+  readingId Int
+  provider  String   @default("mock")
+  content   String
+  createdAt DateTime @default(now())
+  reading   Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+}
