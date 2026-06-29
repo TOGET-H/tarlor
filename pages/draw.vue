@@ -13,7 +13,8 @@ import {
   positionLabels,
   spreadOptions,
   type OracleTheme,
-  type SpreadType
+  type SpreadType,
+  useOracleTheme
 } from '~/utils/oracle'
 
 type DrawStage = 'prepare' | 'shuffling' | 'reveal'
@@ -27,7 +28,7 @@ function firstQueryValue(value: unknown) {
 
 const question = ref(String(firstQueryValue(route.query.question) || ''))
 const spreadType = ref<SpreadType>(normalizeSpread(firstQueryValue(route.query.spread)))
-const theme = ref<OracleTheme>(normalizeTheme(firstQueryValue(route.query.theme)))
+const theme = useOracleTheme()
 const reading = ref<Reading | null>(null)
 const stage = ref<DrawStage>('prepare')
 const revealedIds = ref<number[]>([])
@@ -37,6 +38,7 @@ const drawing = ref(false)
 const exporting = ref(false)
 const followUp = ref('我该如何行动？')
 const readerNote = ref('')
+const brokenImageIds = ref<number[]>([])
 
 const followUpPrompts = [
   '我该如何行动？',
@@ -44,6 +46,12 @@ const followUpPrompts = [
   '这件事真正的阻碍是什么？',
   '未来三天我该关注什么？'
 ]
+
+const routeTheme = firstQueryValue(route.query.theme)
+
+if (routeTheme) {
+  theme.value = normalizeTheme(routeTheme)
+}
 
 const initialReadingId = firstQueryValue(route.query.reading)
 
@@ -57,7 +65,7 @@ if (initialReadingId) {
     question.value = savedReading.value.question
     spreadType.value = normalizeSpread(savedReading.value.spreadType)
     stage.value = 'reveal'
-    revealedIds.value = savedReading.value.cards.map((entry) => entry.id)
+    revealedIds.value = []
   } else if (savedReadingError.value) {
     error.value = '没有找到这条抽牌记录'
   }
@@ -79,6 +87,17 @@ function getErrorMessage(err: unknown, fallback: string) {
 
 function delay(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms))
+}
+
+function selectTheme(nextTheme: OracleTheme) {
+  theme.value = nextTheme
+  router.replace({
+    path: route.path,
+    query: {
+      ...route.query,
+      theme: nextTheme
+    }
+  })
 }
 
 async function drawCards() {
@@ -124,6 +143,16 @@ function revealCard(id: number) {
   }
 }
 
+function hasCardImage(cardId: number, imageUrl: string | null) {
+  return Boolean(imageUrl && !brokenImageIds.value.includes(cardId))
+}
+
+function markBrokenImage(cardId: number) {
+  if (!brokenImageIds.value.includes(cardId)) {
+    brokenImageIds.value = [...brokenImageIds.value, cardId]
+  }
+}
+
 function revealAll() {
   if (reading.value) {
     revealedIds.value = reading.value.cards.map((entry) => entry.id)
@@ -135,6 +164,12 @@ function resetReading() {
   revealedIds.value = []
   stage.value = 'prepare'
   exportError.value = ''
+  router.replace({
+    path: '/draw',
+    query: {
+      theme: theme.value
+    }
+  })
 }
 
 async function exportReading() {
@@ -156,7 +191,7 @@ async function exportReading() {
 </script>
 
 <template>
-  <section :class="['oracle-page', `theme-${theme}`]">
+  <section class="oracle-page">
     <div class="section-header">
       <div>
         <p class="eyebrow">Oracle Reading</p>
@@ -170,7 +205,7 @@ async function exportReading() {
           class="theme-dot"
           :class="[item.key, { 'is-active': theme === item.key }]"
           type="button"
-          @click="theme = item.key"
+          @click="selectTheme(item.key)"
         >
           {{ item.name }}
         </button>
@@ -267,10 +302,19 @@ async function exportReading() {
                   <span class="oracle-card-back" />
                 </span>
                 <span class="flip-face flip-front">
-                  <span class="card-face-art">
-                    <span>{{ positionLabels[entry.position] ?? entry.position }}</span>
-                    <strong>{{ entry.card.name }}</strong>
-                    <span>{{ orientationLabels[entry.orientation] ?? entry.orientation }}</span>
+                  <span class="card-face-art card-face-image">
+                    <img
+                      v-if="hasCardImage(entry.card.id, entry.card.imageUrl)"
+                      :src="entry.card.imageUrl || ''"
+                      :alt="entry.card.name"
+                      loading="lazy"
+                      @error="markBrokenImage(entry.card.id)"
+                    >
+                    <span v-else class="card-face-fallback">
+                      <span>{{ positionLabels[entry.position] ?? entry.position }}</span>
+                      <strong>{{ entry.card.name }}</strong>
+                      <span>{{ orientationLabels[entry.orientation] ?? entry.orientation }}</span>
+                    </span>
                   </span>
                 </span>
               </span>

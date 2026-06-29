@@ -1,3 +1,4 @@
+import { useState } from '#app'
 import type { Reading } from '~/types/tarot'
 
 export type OracleTheme = 'blue' | 'ember' | 'moss' | 'violet'
@@ -56,6 +57,10 @@ export function normalizeTheme(value: unknown): OracleTheme {
   return oracleThemes.some((theme) => theme.key === value)
     ? value as OracleTheme
     : 'blue'
+}
+
+export function useOracleTheme() {
+  return useState<OracleTheme>('oracle-theme', () => 'blue')
 }
 
 export function normalizeSpread(value: unknown): SpreadType {

@@ -22,6 +22,7 @@ const saving = ref(false)
 const exporting = ref(false)
 const saveError = ref('')
 const exportError = ref('')
+const brokenImageIds = ref<number[]>([])
 
 const spreadLabels = Object.fromEntries(
   spreadOptions.map((spread) => [spread.value, spread.label])
@@ -37,6 +38,16 @@ watchEffect(() => {
 function getErrorMessage(err: unknown, fallback: string) {
   const value = err as { statusMessage?: string, data?: { statusMessage?: string } }
   return value.statusMessage || value.data?.statusMessage || fallback
+}
+
+function hasCardImage(cardId: number, imageUrl: string | null) {
+  return Boolean(imageUrl && !brokenImageIds.value.includes(cardId))
+}
+
+function markBrokenImage(cardId: number) {
+  if (!brokenImageIds.value.includes(cardId)) {
+    brokenImageIds.value = [...brokenImageIds.value, cardId]
+  }
 }
 
 async function saveReading() {
@@ -78,7 +89,7 @@ async function exportReading() {
 </script>
 
 <template>
-  <section class="oracle-page theme-blue">
+  <section class="oracle-page">
     <div class="section-header">
       <div>
         <p class="eyebrow">Saved Reading</p>
@@ -139,7 +150,7 @@ async function exportReading() {
         <p v-if="exportError" class="export-error">{{ exportError }}</p>
       </aside>
 
-      <div class="grid">
+      <div class="grid detail-main">
         <section class="draw-stage reveal-board">
           <div>
             <p class="eyebrow">Spread</p>
@@ -149,9 +160,18 @@ async function exportReading() {
           <div class="saved-spread-grid">
             <article v-for="entry in reading.cards" :key="entry.id" class="saved-card">
               <div class="saved-card-art">
-                <span>{{ positionLabels[entry.position] ?? entry.position }}</span>
-                <strong>{{ entry.card.name }}</strong>
-                <span>{{ orientationLabels[entry.orientation] ?? entry.orientation }}</span>
+                <img
+                  v-if="hasCardImage(entry.card.id, entry.card.imageUrl)"
+                  :src="entry.card.imageUrl || ''"
+                  :alt="entry.card.name"
+                  loading="lazy"
+                  @error="markBrokenImage(entry.card.id)"
+                >
+                <div v-else class="saved-card-fallback">
+                  <span>{{ positionLabels[entry.position] ?? entry.position }}</span>
+                  <strong>{{ entry.card.name }}</strong>
+                  <span>{{ orientationLabels[entry.orientation] ?? entry.orientation }}</span>
+                </div>
               </div>
 
               <div>

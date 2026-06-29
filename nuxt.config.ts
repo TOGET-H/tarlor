@@ -5,8 +5,11 @@ export default defineNuxtConfig({
       title: 'Digital Oracle'
     }
   },
+  dir: {
+    public: 'public'
+  },
   css: ['~/assets/css/main.css'],
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   typescript: {
     typeCheck: true
   }

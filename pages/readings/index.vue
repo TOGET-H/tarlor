@@ -40,7 +40,7 @@ async function deleteReading(reading: Reading) {
 </script>
 
 <template>
-  <section class="oracle-page theme-blue">
+  <section class="oracle-page">
     <div class="section-header">
       <div>
         <p class="eyebrow">Archive</p>
@@ -71,6 +71,16 @@ async function deleteReading(reading: Reading) {
             {{ entry.card.name }} /
             {{ orientationLabels[entry.orientation] ?? entry.orientation }}
           </span>
+        </div>
+
+        <div class="record-card-images" aria-label="本次抽到的牌面">
+          <img
+            v-for="entry in reading.cards"
+            :key="entry.id"
+            :src="entry.card.imageUrl || ''"
+            :alt="entry.card.name"
+            loading="lazy"
+          >
         </div>
 
         <p class="muted">{{ cardSummary(reading) }}</p>

@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { oracleThemes, spreadOptions, type OracleTheme, type SpreadType } from '~/utils/oracle'
+import { oracleThemes, spreadOptions, useOracleTheme, type OracleTheme, type SpreadType } from '~/utils/oracle'
 
 const router = useRouter()
 
 const question = ref('')
 const spreadType = ref<SpreadType>('single')
-const theme = ref<OracleTheme>('blue')
+const theme = useOracleTheme()
+
+function selectTheme(nextTheme: OracleTheme) {
+  theme.value = nextTheme
+}
 
 function startReading() {
   router.push({
@@ -20,7 +24,7 @@ function startReading() {
 </script>
 
 <template>
-  <section :class="['oracle-page', `theme-${theme}`]">
+  <section class="oracle-page">
     <div class="hero-oracle">
       <div class="oracle-entry">
         <div>
@@ -69,7 +73,7 @@ function startReading() {
                 class="theme-dot"
                 :class="[item.key, { 'is-active': theme === item.key }]"
                 type="button"
-                @click="theme = item.key"
+                @click="selectTheme(item.key)"
               >
                 {{ item.name }}
               </button>
@@ -94,24 +98,6 @@ function startReading() {
       <div class="card-altar" aria-hidden="true">
         <div class="oracle-card-back large" />
       </div>
-    </div>
-
-    <div class="feature-strip">
-      <article class="feature-panel">
-        <span class="badge">Ritual</span>
-        <h3>洗牌与翻牌</h3>
-        <p>抽牌不会瞬间跳出结果，先进入洗牌状态，再由你亲手翻开每张牌。</p>
-      </article>
-      <article class="feature-panel">
-        <span class="badge">Report</span>
-        <h3>长文解读</h3>
-        <p>模拟 AI 解读会被包装成完整报告，后续接入真实 AI 时接口不需要重写。</p>
-      </article>
-      <article class="feature-panel">
-        <span class="badge">Archive</span>
-        <h3>保存与导出</h3>
-        <p>每次抽牌都会保存为记录，也可以导出一张适合分享的解读长图。</p>
-      </article>
     </div>
   </section>
 </template>
