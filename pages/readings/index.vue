@@ -83,10 +83,10 @@ async function deleteReading(reading: Reading) {
           >
         </div>
 
-        <p class="muted">{{ cardSummary(reading) }}</p>
-        <p>{{ latestInterpretation(reading).slice(0, 168) }}...</p>
+        <p class="record-summary">{{ cardSummary(reading) }}</p>
+        <p class="record-interpretation">{{ latestInterpretation(reading) }}</p>
 
-        <div class="actions">
+        <div class="actions record-actions">
           <NuxtLink :to="`/readings/${reading.id}`">
             <button class="primary" type="button">打开记录</button>
           </NuxtLink>

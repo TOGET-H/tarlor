@@ -1,0 +1,319 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 527" role="img" aria-label="Clockwork tarot card back">
+  <defs>
+    <pattern id="paperLines" width="5" height="5" patternUnits="userSpaceOnUse">
+      <path d="M1 0v5M4 0v5" stroke="#d8d2c8" stroke-width=".55" opacity=".7"/>
+    </pattern>
+    <pattern id="tinyStars" width="48" height="48" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="10" r=".9" fill="#f8f0cf"/>
+      <circle cx="30" cy="18" r=".6" fill="#fff"/>
+      <path d="M40 36l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#f7e8a5"/>
+      <path d="M15 34l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z" fill="#fff"/>
+    </pattern>
+    <pattern id="damask" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M28 7c13 9 13 33 0 42C15 40 15 16 28 7zM28 7c-13 9-13 33 0 42" fill="none" stroke="#b9b1a7" stroke-width=".7" opacity=".28"/>
+      <path d="M9 28c9-11 29-11 38 0c-9 11-29 11-38 0z" fill="none" stroke="#b9b1a7" stroke-width=".7" opacity=".24"/>
+    </pattern>
+    <g id="cornerFiligree" fill="none" stroke="#6e6b66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 44C18 39 24 25 18 10C33 21 42 15 48 0"/>
+      <path d="M3 34c14-7 20-16 18-28"/>
+      <path d="M18 44c4-14 13-21 29-23"/>
+      <path d="M8 12c7 3 12 1 16-6"/>
+      <path d="M34 36c-6-1-10 1-14 7"/>
+    </g>
+    <g id="leafSpray" fill="#e8e4dd" stroke="#706d68" stroke-width="1.2" stroke-linejoin="round">
+      <path d="M0 0c18-14 35-18 51-7C31-4 15 4 0 0z"/>
+      <path d="M4 17c17-9 33-9 46 3C31 15 17 19 4 17z"/>
+      <path d="M9 34c15-4 28 0 38 12C31 36 19 38 9 34z"/>
+      <path d="M9 0c12 7 22 17 31 30" fill="none"/>
+      <path d="M12 16c10 5 18 12 25 22" fill="none"/>
+    </g>
+    <g id="smallFlower" fill="#e9a79c" stroke="#6e6b66" stroke-width="1">
+      <ellipse cx="0" cy="-8" rx="4" ry="9"/>
+      <ellipse cx="7" cy="-2" rx="4" ry="9" transform="rotate(60 7 -2)"/>
+      <ellipse cx="4" cy="7" rx="4" ry="9" transform="rotate(130 4 7)"/>
+      <ellipse cx="-4" cy="7" rx="4" ry="9" transform="rotate(230 -4 7)"/>
+      <ellipse cx="-7" cy="-2" rx="4" ry="9" transform="rotate(300 -7 -2)"/>
+      <circle r="4" fill="#f2d7c9"/>
+    </g>
+    <g id="laceFlower" fill="#efe9df" stroke="#6e6b66" stroke-width=".9">
+      <ellipse cx="0" cy="-10" rx="3.5" ry="10"/>
+      <ellipse cx="9" cy="-4" rx="3.5" ry="10" transform="rotate(58 9 -4)"/>
+      <ellipse cx="7" cy="7" rx="3.5" ry="10" transform="rotate(126 7 7)"/>
+      <ellipse cx="-7" cy="7" rx="3.5" ry="10" transform="rotate(234 -7 7)"/>
+      <ellipse cx="-9" cy="-4" rx="3.5" ry="10" transform="rotate(302 -9 -4)"/>
+      <circle r="3.5" fill="#d9877d"/>
+    </g>
+    <g id="acanthusCurl" fill="none" stroke="#6e6b66" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 30c20-4 33-17 32-31c-13 7-19 17-17 31"/>
+      <path d="M5 17c11 4 21 1 31-9"/>
+      <path d="M1 30c13-13 28-17 47-13"/>
+      <path d="M13 31c5-9 13-13 24-12"/>
+    </g>
+    <g id="pearlDrop" fill="none" stroke="#d9a79c" stroke-linecap="round">
+      <path d="M0 0v46" stroke-width="1.4"/>
+      <circle cy="8" r="2.7" fill="#efc2ba" stroke="#8a716c"/>
+      <circle cy="19" r="2.3" fill="#efc2ba" stroke="#8a716c"/>
+      <circle cy="30" r="2" fill="#efc2ba" stroke="#8a716c"/>
+      <circle cy="41" r="2.6" fill="#efc2ba" stroke="#8a716c"/>
+    </g>
+    <g id="fanFeather" fill="#e8e4dd" stroke="#706d68" stroke-width="1">
+      <path d="M0 0c13-30 32-42 56-36c-11 22-29 35-56 36z"/>
+      <path d="M8-2c11-13 24-23 41-31M18-3c8-10 18-18 30-24M29-5c6-7 13-13 22-17" fill="none"/>
+    </g>
+    <g id="borderBloom" fill="#eee8df" stroke="#6e6b66" stroke-width="1.1">
+      <path d="M0-17c9 5 12 14 8 24c-8-5-11-14-8-24z"/>
+      <path d="M0-17c-9 5-12 14-8 24c8-5 11-14 8-24z"/>
+      <path d="M-18 0c8-7 18-8 27-2c-8 7-18 8-27 2z"/>
+      <path d="M18 0c-8-7-18-8-27-2c8 7 18 8 27 2z"/>
+      <circle r="4" fill="#e9a79c"/>
+    </g>
+    <g id="fleurDeLis" fill="#d8b66f" stroke="#5f5549" stroke-width=".9" stroke-linejoin="round">
+      <path d="M0-24c9 10 8 21 0 31c-8-10-9-21 0-31z"/>
+      <path d="M-3 2c-16-7-20-17-13-29c13 8 17 17 13 29z"/>
+      <path d="M3 2c16-7 20-17 13-29c-13 8-17 17-13 29z"/>
+      <path d="M-18 5c10 6 24 6 36 0l-5 10H5l-5 13l-5-13h-8z"/>
+    </g>
+    <g id="gothicArch" fill="none" stroke="#d8b66f" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 62V22C0 8 11-7 25-18C39-7 50 8 50 22v40"/>
+      <path d="M7 62V25C7 14 15 1 25-8C35 1 43 14 43 25v37"/>
+      <path d="M14 62V29c0-8 5-16 11-22c6 6 11 14 11 22v33"/>
+      <path d="M0 62h50"/>
+    </g>
+    <g id="jewel" stroke="#4f4943" stroke-width=".85">
+      <path d="M0-6l6 6l-6 6l-6-6z" fill="#d87669"/>
+      <circle r="2" fill="#f6d7b9" stroke="none"/>
+    </g>
+    <g id="goldBead" fill="#d8b66f" stroke="#5f5549" stroke-width=".65">
+      <circle r="3"/>
+      <circle r="1.1" fill="#fff1c8" stroke="none"/>
+    </g>
+  </defs>
+
+  <rect width="300" height="527" fill="#f4efe6"/>
+  <rect width="300" height="527" fill="url(#paperLines)" opacity=".7"/>
+  <rect x="15" y="18" width="270" height="491" fill="url(#damask)" opacity=".85"/>
+
+  <path d="M34 40H266v345l-28 82H62l-28-82z" fill="#07080b" stroke="#66615b" stroke-width="2"/>
+  <path d="M20 22h260v483H20z" fill="none" stroke="#8a847b" stroke-width="2"/>
+  <path d="M29 31h242v465H29z" fill="none" stroke="#b4aea4" stroke-width="1.2"/>
+  <path d="M42 50h216v328l-25 75H67l-25-75z" fill="none" stroke="#e6dfd4" stroke-width="2.2"/>
+  <path d="M48 58h204v315l-22 68H70l-22-68z" fill="none" stroke="#8f887f" stroke-width="1.1" stroke-dasharray="2 5"/>
+  <path d="M34 40H266v345l-28 82H62l-28-82z" fill="url(#tinyStars)" opacity=".9"/>
+
+  <g fill="#efe9df" stroke="#8b847a" stroke-width=".75" opacity=".98">
+    <circle cx="52" cy="52" r="2.3"/><circle cx="68" cy="50" r="2"/><circle cx="84" cy="49" r="2.3"/><circle cx="100" cy="48" r="2"/>
+    <circle cx="116" cy="48" r="2.3"/><circle cx="132" cy="48" r="2"/><circle cx="148" cy="48" r="2.5"/><circle cx="164" cy="48" r="2"/>
+    <circle cx="180" cy="48" r="2.3"/><circle cx="196" cy="48" r="2"/><circle cx="212" cy="49" r="2.3"/><circle cx="228" cy="50" r="2"/>
+    <circle cx="244" cy="52" r="2.3"/>
+    <circle cx="55" cy="474" r="2.3"/><circle cx="72" cy="478" r="2"/><circle cx="89" cy="481" r="2.3"/><circle cx="106" cy="483" r="2"/>
+    <circle cx="123" cy="484" r="2.3"/><circle cx="140" cy="485" r="2"/><circle cx="157" cy="485" r="2.5"/><circle cx="174" cy="484" r="2"/>
+    <circle cx="191" cy="483" r="2.3"/><circle cx="208" cy="481" r="2"/><circle cx="225" cy="478" r="2.3"/><circle cx="242" cy="474" r="2"/>
+  </g>
+
+  <use href="#cornerFiligree" x="23" y="25"/>
+  <use href="#cornerFiligree" x="277" y="25" transform="scale(-1 1) translate(-300 0)"/>
+  <use href="#cornerFiligree" x="23" y="503" transform="scale(1 -1) translate(0 -527)"/>
+  <use href="#cornerFiligree" x="277" y="503" transform="scale(-1 -1) translate(-300 -527)"/>
+  <use href="#acanthusCurl" x="52" y="82"/>
+  <use href="#acanthusCurl" x="248" y="82" transform="scale(-1 1) translate(-300 0)"/>
+  <use href="#acanthusCurl" x="52" y="450" transform="scale(1 -1) translate(0 -527)"/>
+  <use href="#acanthusCurl" x="248" y="450" transform="scale(-1 -1) translate(-300 -527)"/>
+  <use href="#borderBloom" x="150" y="37" transform="scale(.72)"/>
+  <use href="#borderBloom" x="150" y="491" transform="scale(.72)"/>
+
+  <g opacity=".98">
+    <use href="#leafSpray" x="76" y="182" transform="rotate(210 76 182)"/>
+    <use href="#leafSpray" x="224" y="182" transform="scale(-1 1) rotate(210 224 182) translate(-448 0)"/>
+    <use href="#leafSpray" x="73" y="328" transform="rotate(145 73 328)"/>
+    <use href="#leafSpray" x="227" y="328" transform="scale(-1 1) rotate(145 227 328) translate(-454 0)"/>
+    <use href="#fanFeather" x="86" y="170" transform="rotate(222 86 170) scale(.9)"/>
+    <use href="#fanFeather" x="214" y="170" transform="scale(-.9 .9) rotate(222 214 170) translate(-475 0)"/>
+    <use href="#fanFeather" x="78" y="356" transform="rotate(138 78 356) scale(.86)"/>
+    <use href="#fanFeather" x="222" y="356" transform="scale(-.86 .86) rotate(138 222 356) translate(-516 0)"/>
+  </g>
+
+  <g fill="none" stroke="#9a756e" stroke-width="1.4" stroke-linecap="round">
+    <path d="M68 206c-24 2-36 19-31 40c4 16 22 22 35 12c10-8 5-22-8-18c-8 3-9 11-4 16"/>
+    <path d="M232 206c24 2 36 19 31 40c-4 16-22 22-35 12c-10-8-5-22 8-18c8 3 9 11 4 16"/>
+    <path d="M63 300c-25 8-31 29-20 45c10 14 30 14 38 0c6-10-3-20-13-14"/>
+    <path d="M237 300c25 8 31 29 20 45c-10 14-30 14-38 0c-6-10 3-20 13-14"/>
+    <path d="M52 122c-20 30-19 69 7 88c15 11 36 9 45-5c8-12-3-26-16-19c-8 4-9 13-2 19"/>
+    <path d="M248 122c20 30 19 69-7 88c-15 11-36 9-45-5c-8-12 3-26 16-19c8 4 9 13 2 19"/>
+    <path d="M49 367c-17 24-13 57 11 71c15 9 34 4 39-9c4-11-6-21-17-15"/>
+    <path d="M251 367c17 24 13 57-11 71c-15 9-34 4-39-9c-4-11 6-21 17-15"/>
+  </g>
+
+  <g>
+    <use href="#pearlDrop" x="58" y="240"/>
+    <use href="#pearlDrop" x="242" y="240"/>
+    <use href="#pearlDrop" x="80" y="312" transform="scale(.82)"/>
+    <use href="#pearlDrop" x="220" y="312" transform="scale(.82)"/>
+    <use href="#laceFlower" x="61" y="228" transform="scale(.8)"/>
+    <use href="#laceFlower" x="239" y="228" transform="scale(.8)"/>
+    <use href="#laceFlower" x="77" y="301" transform="scale(.62)"/>
+    <use href="#laceFlower" x="223" y="301" transform="scale(.62)"/>
+  </g>
+
+  <g transform="translate(150 92)">
+    <circle r="39" fill="#eee8df" stroke="#706d68" stroke-width="2"/>
+    <circle r="31" fill="none" stroke="#a59e96" stroke-width="1.4"/>
+    <path d="M0-29L7-7L29 0L7 7L0 29L-7 7L-29 0L-7-7z" fill="#d8d4cd" stroke="#484746" stroke-width="1.6"/>
+    <path d="M0-23L4-4L23 0L4 4L0 23L-4 4L-23 0L-4-4z" fill="#111318" stroke="#d2cbc1" stroke-width="1.1"/>
+    <circle r="8" fill="#e88684" stroke="#4b4540" stroke-width="1.4"/>
+    <circle r="47" fill="none" stroke="#d8d4cd" stroke-width="7" stroke-dasharray="1.5 4"/>
+  </g>
+
+  <g transform="translate(150 245)">
+    <g opacity=".86">
+      <use href="#gothicArch" x="-104" y="-92" transform="scale(.72)"/>
+      <use href="#gothicArch" x="-70" y="-116" transform="scale(.72)"/>
+      <use href="#gothicArch" x="-35" y="-127" transform="scale(.72)"/>
+      <use href="#gothicArch" x="0" y="-127" transform="scale(.72)"/>
+      <use href="#gothicArch" x="35" y="-116" transform="scale(.72)"/>
+      <use href="#gothicArch" x="70" y="-92" transform="scale(.72)"/>
+    </g>
+    <circle r="112" fill="none" stroke="#d8b66f" stroke-width="2.2" stroke-dasharray="1.4 6" opacity=".94"/>
+    <circle r="105" fill="none" stroke="#e8e0d4" stroke-width="4.5" stroke-dasharray="1 5" opacity=".95"/>
+    <circle r="99" fill="none" stroke="#776f66" stroke-width="1.2" stroke-dasharray="7 4" opacity=".82"/>
+    <circle r="95" fill="none" stroke="#b9975b" stroke-width="1.5" stroke-dasharray="2 4" opacity=".85"/>
+    <path d="M0-111c18 19 18 37 0 54c-18-17-18-35 0-54zM0 111c18-19 18-37 0-54c-18 17-18 35 0 54zM-111 0c19-18 37-18 54 0c-17 18-35 18-54 0zM111 0c-19-18-37-18-54 0c17 18 35 18 54 0z" fill="#eee8df" stroke="#706d68" stroke-width="1.1"/>
+    <use href="#fleurDeLis" x="0" y="-117" transform="scale(.72)"/>
+    <use href="#fleurDeLis" x="0" y="117" transform="scale(.72) rotate(180)"/>
+    <use href="#fleurDeLis" x="-117" y="0" transform="scale(.72) rotate(-90)"/>
+    <use href="#fleurDeLis" x="117" y="0" transform="scale(.72) rotate(90)"/>
+    <circle r="90" fill="#eee8df" stroke="#6e6b66" stroke-width="2.4"/>
+    <circle r="87" fill="none" stroke="#b9975b" stroke-width="2.2" stroke-dasharray="5 5"/>
+    <circle r="84" fill="none" stroke="#cfc7bc" stroke-width="2" stroke-dasharray="1.5 3"/>
+    <circle r="78" fill="#fbfaf6" stroke="#858079" stroke-width="1.4"/>
+    <circle r="67" fill="none" stroke="#aaa39a" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <g>
+      <use href="#goldBead" x="0" y="-87"/>
+      <use href="#goldBead" x="44" y="-75"/>
+      <use href="#goldBead" x="75" y="-44"/>
+      <use href="#goldBead" x="87" y="0"/>
+      <use href="#goldBead" x="75" y="44"/>
+      <use href="#goldBead" x="44" y="75"/>
+      <use href="#goldBead" x="0" y="87"/>
+      <use href="#goldBead" x="-44" y="75"/>
+      <use href="#goldBead" x="-75" y="44"/>
+      <use href="#goldBead" x="-87" y="0"/>
+      <use href="#goldBead" x="-75" y="-44"/>
+      <use href="#goldBead" x="-44" y="-75"/>
+    </g>
+    <circle r="43" fill="#eee8df" stroke="#c2bab0" stroke-width="1.2"/>
+    <circle r="35" fill="none" stroke="#cfc7bc" stroke-width="1" stroke-dasharray="2 2"/>
+    <path d="M0-43C24-29 34-11 37 0C23-6 7-12 0-43zM0-43C-24-29-34-11-37 0C-23-6-7-12 0-43zM0 43C24 29 34 11 37 0C23 6 7 12 0 43zM0 43C-24 29-34 11-37 0C-23 6-7 12 0 43z" fill="none" stroke="#bab2a8" stroke-width="1"/>
+    <path d="M0-40C12-22 12 22 0 40C-12 22-12-22 0-40zM-40 0C-22-12 22-12 40 0C22 12-22 12-40 0z" fill="none" stroke="#d6cec3" stroke-width=".8"/>
+    <path d="M-29-29C-5-21 21 5 29 29M29-29C5-21-21 5-29 29" fill="none" stroke="#d6cec3" stroke-width=".8"/>
+    <circle r="25" fill="none" stroke="#b9975b" stroke-width="1" stroke-dasharray="1.5 3"/>
+    <g stroke="#3d4249" stroke-width="1.7">
+      <line x1="0" y1="-78" x2="0" y2="-66"/>
+      <line x1="39" y1="-67.5" x2="33" y2="-57.1"/>
+      <line x1="67.5" y1="-39" x2="57.1" y2="-33"/>
+      <line x1="78" y1="0" x2="66" y2="0"/>
+      <line x1="67.5" y1="39" x2="57.1" y2="33"/>
+      <line x1="39" y1="67.5" x2="33" y2="57.1"/>
+      <line x1="0" y1="78" x2="0" y2="66"/>
+      <line x1="-39" y1="67.5" x2="-33" y2="57.1"/>
+      <line x1="-67.5" y1="39" x2="-57.1" y2="33"/>
+      <line x1="-78" y1="0" x2="-66" y2="0"/>
+      <line x1="-67.5" y1="-39" x2="-57.1" y2="-33"/>
+      <line x1="-39" y1="-67.5" x2="-33" y2="-57.1"/>
+    </g>
+    <g fill="#111318" font-family="Georgia, Times New Roman, serif" font-size="22" text-anchor="middle" dominant-baseline="middle">
+      <text x="0" y="-57">XII</text>
+      <text x="30" y="-51">I</text>
+      <text x="51" y="-30">II</text>
+      <text x="58" y="0">III</text>
+      <text x="51" y="31">IV</text>
+      <text x="30" y="53">V</text>
+      <text x="0" y="61">VI</text>
+      <text x="-30" y="53">VII</text>
+      <text x="-51" y="31">VIII</text>
+      <text x="-58" y="0">IX</text>
+      <text x="-51" y="-31">X</text>
+      <text x="-30" y="-51">XI</text>
+    </g>
+    <path d="M0 0L50-34" stroke="#16191f" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M0 0L-44 14" stroke="#a95342" stroke-width="2" stroke-linecap="round"/>
+    <path d="M0 0L11 49" stroke="#a95342" stroke-width="1.7" stroke-linecap="round"/>
+    <path d="M50-34l-9 2l5-8zM-44 14l8-7l-1 10zM11 49l-6-8l9 2z" fill="#d8b66f" stroke="#4f4943" stroke-width=".75"/>
+    <circle r="13" fill="#d8b66f" stroke="#4b4540" stroke-width="1.2"/>
+    <circle r="9" fill="#d87669" stroke="#4b4540" stroke-width="1.6"/>
+    <circle r="3.2" fill="#2c2d2f"/>
+  </g>
+
+  <g transform="translate(150 362)">
+    <path d="M-60-8h120l-9 15H-51z" fill="#d8b66f" stroke="#5f5549" stroke-width="1.1"/>
+    <path d="M-46 0h92v54h-92z" fill="#e6e0d7" stroke="#706d68" stroke-width="1.5"/>
+    <path d="M-55 54h110l-11 18h-88z" fill="#d8b66f" stroke="#5f5549" stroke-width="1.2"/>
+    <path d="M-38 5h76v42h-76z" fill="none" stroke="#b9975b" stroke-width=".9"/>
+    <path d="M-34 10h68M-36 27h72M-26 44h52" stroke="#908a82" stroke-width="1"/>
+    <path d="M-54 14c-22 8-34 0-42-18c19 3 32 0 46-13" fill="none" stroke="#706d68" stroke-width="2"/>
+    <path d="M54 14c22 8 34 0 42-18c-19 3-32 0-46-13" fill="none" stroke="#706d68" stroke-width="2"/>
+    <path d="M-73 29c-27 19-51 21-72 6c27-5 48-16 63-34" fill="none" stroke="#d8b66f" stroke-width="1.2"/>
+    <path d="M73 29c27 19 51 21 72 6c-27-5-48-16-63-34" fill="none" stroke="#d8b66f" stroke-width="1.2"/>
+    <use href="#smallFlower" x="0" y="0"/>
+    <use href="#laceFlower" x="-36" y="-8" transform="scale(.62)"/>
+    <use href="#laceFlower" x="36" y="-8" transform="scale(.62)"/>
+    <use href="#jewel" x="-54" y="3" transform="scale(.72)"/>
+    <use href="#jewel" x="54" y="3" transform="scale(.72)"/>
+    <use href="#jewel" x="0" y="65" transform="scale(.7)"/>
+  </g>
+
+  <g transform="translate(150 443)">
+    <path d="M0-90c7 26 7 55 0 86" stroke="#d8b66f" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cy="-67" r="3" fill="#f0d98e" stroke="#5f5549" stroke-width=".7"/>
+    <circle cy="-48" r="2.7" fill="#efc2ba" stroke="#8a716c" stroke-width=".7"/>
+    <circle cy="-29" r="3.4" fill="#f0d98e" stroke="#5f5549" stroke-width=".7"/>
+    <use href="#smallFlower" x="0" y="-15" transform="scale(1.35)"/>
+    <use href="#laceFlower" x="-28" y="-6" transform="scale(.74) rotate(-18)"/>
+    <use href="#laceFlower" x="28" y="-6" transform="scale(.74) rotate(18)"/>
+    <path d="M0-2c18 10 29 26 34 49c-16-13-27-29-34-49zM0-2c-18 10-29 26-34 49c16-13 27-29 34-49z" fill="#e7d0c8" stroke="#706d68" stroke-width="1.4"/>
+    <path d="M-12 2c6 22 4 45-12 69c-7-27-3-50 12-69zM12 2c-6 22-4 45 12 69c7-27 3-50-12-69z" fill="#d8b66f" stroke="#5f5549" stroke-width="1.1" opacity=".92"/>
+    <path d="M-70 18c24-16 47-20 70-20c-23 10-43 22-62 39" fill="none" stroke="#706d68" stroke-width="1.7"/>
+    <path d="M70 18c-24-16-47-20-70-20c23 10 43 22 62 39" fill="none" stroke="#706d68" stroke-width="1.7"/>
+    <path d="M-86 32c31-12 59-15 86-34M86 32c-31-12-59-15-86-34" fill="none" stroke="#9d8f82" stroke-width="1" stroke-dasharray="2 3"/>
+    <path d="M-103 45c33-5 67-20 103-47M103 45C70 40 36 25 0-2" fill="none" stroke="#d8b66f" stroke-width="1.1"/>
+    <use href="#fleurDeLis" x="0" y="50" transform="scale(.62)"/>
+  </g>
+
+  <g>
+    <g transform="translate(39 438) rotate(35)">
+      <rect x="-31" y="-28" width="62" height="56" rx="3" fill="#fbfaf6" stroke="#706d68" stroke-width="1.4"/>
+      <rect x="-24" y="-21" width="48" height="42" rx="2" fill="none" stroke="#d8b66f" stroke-width="1.1"/>
+      <path d="M-29 11c16-10 36-20 58-30" stroke="#d8b66f" stroke-width="1.2"/>
+      <path d="M-24-18c7 4 11 9 12 17c-8-2-13-8-12-17zM24 18c-7-4-11-9-12-17c8 2 13 8 12 17z" fill="#eee8df" stroke="#706d68" stroke-width=".85"/>
+      <path d="M-20 19c5-7 12-9 20-5M20-19c-5 7-12 9-20 5" fill="none" stroke="#9a756e" stroke-width=".9" stroke-linecap="round"/>
+      <path d="M0-14c10 7 11 20 0 32c-11-12-10-25 0-32z" fill="#df6359" stroke="#6e3e38" stroke-width="1"/>
+      <path d="M0-8c-9 2-14 11-8 18c5 5 12 3 15-3" fill="none" stroke="#f4b0a6" stroke-width="1.1" stroke-linecap="round"/>
+      <use href="#fleurDeLis" x="-18" y="-15" transform="scale(.25)"/>
+      <use href="#fleurDeLis" x="18" y="15" transform="scale(.25) rotate(180)"/>
+      <use href="#goldBead" x="-24" y="-22" transform="scale(.62)"/>
+      <use href="#goldBead" x="24" y="-22" transform="scale(.62)"/>
+      <use href="#goldBead" x="-24" y="22" transform="scale(.62)"/>
+      <use href="#goldBead" x="24" y="22" transform="scale(.62)"/>
+    </g>
+    <g transform="translate(261 438) rotate(-35)">
+      <rect x="-31" y="-28" width="62" height="56" rx="3" fill="#fbfaf6" stroke="#706d68" stroke-width="1.4"/>
+      <rect x="-24" y="-21" width="48" height="42" rx="2" fill="none" stroke="#d8b66f" stroke-width="1.1"/>
+      <path d="M-29-19c16 10 36 20 58 30" stroke="#d8b66f" stroke-width="1.2"/>
+      <path d="M-24 18c7-4 11-9 12-17c-8 2-13 8-12 17zM24-18c-7 4-11 9-12 17c8-2 13-8 12-17z" fill="#eee8df" stroke="#706d68" stroke-width=".85"/>
+      <path d="M-20-19c5 7 12 9 20 5M20 19c-5-7-12-9-20-5" fill="none" stroke="#9a756e" stroke-width=".9" stroke-linecap="round"/>
+      <path d="M0-14c10 7 11 20 0 32c-11-12-10-25 0-32z" fill="#42484f" stroke="#22272d" stroke-width="1"/>
+      <path d="M0-8c-9 2-14 11-8 18c5 5 12 3 15-3" fill="none" stroke="#9aa4ad" stroke-width="1.1" stroke-linecap="round"/>
+      <use href="#fleurDeLis" x="-18" y="-15" transform="scale(.25)"/>
+      <use href="#fleurDeLis" x="18" y="15" transform="scale(.25) rotate(180)"/>
+      <use href="#goldBead" x="-24" y="-22" transform="scale(.62)"/>
+      <use href="#goldBead" x="24" y="-22" transform="scale(.62)"/>
+      <use href="#goldBead" x="-24" y="22" transform="scale(.62)"/>
+      <use href="#goldBead" x="24" y="22" transform="scale(.62)"/>
+    </g>
+    <use href="#smallFlower" x="73" y="447" transform="scale(.72) rotate(-18 73 447)"/>
+    <use href="#smallFlower" x="227" y="447" transform="scale(.72) rotate(18 227 447)"/>
+    <use href="#pearlDrop" x="107" y="432" transform="scale(.72)"/>
+    <use href="#pearlDrop" x="193" y="432" transform="scale(.72)"/>
+    <use href="#goldBead" x="82" y="463"/>
+    <use href="#goldBead" x="218" y="463"/>
+  </g>
+</svg>
