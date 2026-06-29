@@ -2,7 +2,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-06-24',
   app: {
     head: {
-      title: '塔罗日记'
+      title: 'Digital Oracle'
     }
   },
   css: ['~/assets/css/main.css'],
