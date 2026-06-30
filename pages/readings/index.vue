@@ -7,7 +7,8 @@ import {
   orientationLabels,
   positionLabels,
   spreadOptions,
-  statusLabels
+  statusLabels,
+  tarotCardThumbnailUrl
 } from '~/utils/oracle'
 
 const { data: readings, refresh } = await useFetch<Reading[]>('/api/readings', {
@@ -77,9 +78,10 @@ async function deleteReading(reading: Reading) {
           <img
             v-for="entry in reading.cards"
             :key="entry.id"
-            :src="entry.card.imageUrl || ''"
+            :src="tarotCardThumbnailUrl(entry.card.imageUrl) || entry.card.imageUrl || ''"
             :alt="entry.card.name"
             loading="lazy"
+            decoding="async"
           >
         </div>
 

@@ -9,10 +9,10 @@ export const oracleThemes: Array<{
   name: string
   tone: string
 }> = [
-  { key: 'blue', name: '蓝灰', tone: '静默星尘' },
-  { key: 'ember', name: '红棕', tone: '余烬低语' },
-  { key: 'moss', name: '黄绿', tone: '林间回声' },
-  { key: 'violet', name: '紫色', tone: '夜幕直觉' }
+  { key: 'blue', name: '月光白', tone: '月辉镜面' },
+  { key: 'ember', name: '粉晶', tone: '蔷薇回声' },
+  { key: 'moss', name: '橄榄石', tone: '林间辉光' },
+  { key: 'violet', name: '紫水晶', tone: '夜幕晶簇' }
 ]
 
 export const spreadOptions: Array<{
@@ -99,13 +99,18 @@ export function cardSummary(reading: Reading) {
     .join(' · ')
 }
 
-function escapeXml(value: string) {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
+export function tarotCardThumbnailUrl(imageUrl: string | null | undefined) {
+  if (!imageUrl) {
+    return ''
+  }
+
+  const match = imageUrl.match(/^\/tarot\/cards\/([^/?#]+)\.[a-z0-9]+$/i)
+
+  if (!match) {
+    return imageUrl
+  }
+
+  return `/tarot/cards/thumbs/${match[1]}.webp`
 }
 
 function wrapText(value: string, maxLength: number) {
@@ -129,10 +134,38 @@ function wrapText(value: string, maxLength: number) {
   return lines
 }
 
-function svgText(lines: string[], x: number, startY: number, size: number, lineHeight: number, fill = '#f6f0e8') {
-  return lines
-    .map((line, index) => `<text x="${x}" y="${startY + index * lineHeight}" font-size="${size}" fill="${fill}">${escapeXml(line)}</text>`)
-    .join('')
+function roundedRect(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+  const r = Math.min(radius, width / 2, height / 2)
+
+  context.beginPath()
+  context.moveTo(x + r, y)
+  context.lineTo(x + width - r, y)
+  context.quadraticCurveTo(x + width, y, x + width, y + r)
+  context.lineTo(x + width, y + height - r)
+  context.quadraticCurveTo(x + width, y + height, x + width - r, y + height)
+  context.lineTo(x + r, y + height)
+  context.quadraticCurveTo(x, y + height, x, y + height - r)
+  context.lineTo(x, y + r)
+  context.quadraticCurveTo(x, y, x + r, y)
+  context.closePath()
+}
+
+function drawTextLines(
+  context: CanvasRenderingContext2D,
+  lines: string[],
+  x: number,
+  startY: number,
+  size: number,
+  lineHeight: number,
+  fill = '#f6f0e8'
+) {
+  context.fillStyle = fill
+  context.font = `${size}px "Iowan Old Style", "Songti SC", "STSong", Georgia, serif`
+  context.textBaseline = 'alphabetic'
+
+  lines.forEach((line, index) => {
+    context.fillText(line, x, startY + index * lineHeight)
+  })
 }
 
 export async function downloadReadingImage(reading: Reading) {
@@ -148,75 +181,74 @@ export async function downloadReadingImage(reading: Reading) {
   const cardTextLines = cardLines.flatMap((line) => wrapText(line, 32)).slice(0, 18)
   const date = formatReadingDate(reading.createdAt)
 
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <defs>
-        <radialGradient id="bg" cx="50%" cy="18%" r="80%">
-          <stop offset="0%" stop-color="#27354a"/>
-          <stop offset="48%" stop-color="#11151f"/>
-          <stop offset="100%" stop-color="#06070a"/>
-        </radialGradient>
-        <linearGradient id="line" x1="0" x2="1">
-          <stop offset="0%" stop-color="#9fb7d7" stop-opacity="0"/>
-          <stop offset="50%" stop-color="#9fb7d7" stop-opacity="0.68"/>
-          <stop offset="100%" stop-color="#9fb7d7" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <rect width="${width}" height="${height}" fill="url(#bg)"/>
-      <g opacity="0.34">
-        <circle cx="160" cy="180" r="2" fill="#fff"/>
-        <circle cx="360" cy="260" r="1.5" fill="#fff"/>
-        <circle cx="900" cy="170" r="2" fill="#fff"/>
-        <circle cx="1040" cy="380" r="1.5" fill="#fff"/>
-        <circle cx="240" cy="620" r="1.2" fill="#fff"/>
-        <circle cx="820" cy="690" r="1.5" fill="#fff"/>
-        <circle cx="1010" cy="1040" r="1.2" fill="#fff"/>
-        <circle cx="190" cy="1300" r="1.5" fill="#fff"/>
-      </g>
-      <rect x="88" y="86" width="1024" height="1528" rx="34" fill="#0c1018" opacity="0.82" stroke="#6d7f9c" stroke-opacity="0.35"/>
-      <text x="120" y="156" font-size="24" fill="#9fb7d7">DIGITAL ORACLE</text>
-      <text x="120" y="230" font-size="56" fill="#f6f0e8">在静默中遇见答案</text>
-      <rect x="120" y="284" width="960" height="2" fill="url(#line)"/>
-      <text x="120" y="360" font-size="28" fill="#9fb7d7">问题</text>
-      ${svgText(questionLines, 120, 414, 40, 56)}
-      <text x="120" y="620" font-size="28" fill="#9fb7d7">牌面</text>
-      ${svgText(cardTextLines, 120, 680, 28, 42, '#e6edf9')}
-      <text x="120" y="1050" font-size="28" fill="#9fb7d7">解读</text>
-      ${svgText(reportLines, 120, 1110, 27, 40, '#f2eee8')}
-      <text x="120" y="1550" font-size="22" fill="#9aa7bd">保存于 ${escapeXml(date)} · Tarot Journal</text>
-    </svg>
-  `
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const context = canvas.getContext('2d')
 
-  const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-
-  try {
-    const image = new Image()
-    image.decoding = 'async'
-    await new Promise<void>((resolve, reject) => {
-      image.onload = () => resolve()
-      image.onerror = () => reject(new Error('无法生成解读长图'))
-      image.src = url
-    })
-
-    const canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = height
-    const context = canvas.getContext('2d')
-
-    if (!context) {
-      throw new Error('当前浏览器不支持 Canvas 导出')
-    }
-
-    context.drawImage(image, 0, 0)
-    const png = canvas.toDataURL('image/png')
-    const link = document.createElement('a')
-    link.href = png
-    link.download = `oracle-reading-${reading.id}.png`
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-  } finally {
-    URL.revokeObjectURL(url)
+  if (!context) {
+    throw new Error('当前浏览器不支持 Canvas 导出')
   }
+
+  const background = context.createRadialGradient(width * 0.5, height * 0.18, 60, width * 0.5, height * 0.18, width * 0.86)
+  background.addColorStop(0, '#27354a')
+  background.addColorStop(0.48, '#11151f')
+  background.addColorStop(1, '#06070a')
+  context.fillStyle = background
+  context.fillRect(0, 0, width, height)
+
+  context.fillStyle = 'rgba(255, 255, 255, 0.34)'
+  const exportStars: Array<[number, number, number]> = [
+    [160, 180, 2],
+    [360, 260, 1.5],
+    [900, 170, 2],
+    [1040, 380, 1.5],
+    [240, 620, 1.2],
+    [820, 690, 1.5],
+    [1010, 1040, 1.2],
+    [190, 1300, 1.5]
+  ]
+
+  exportStars.forEach(([x, y, radius]) => {
+    context.beginPath()
+    context.arc(x, y, radius, 0, Math.PI * 2)
+    context.fill()
+  })
+
+  roundedRect(context, 88, 86, 1024, 1528, 34)
+  context.fillStyle = 'rgba(12, 16, 24, 0.82)'
+  context.fill()
+  context.strokeStyle = 'rgba(109, 127, 156, 0.35)'
+  context.lineWidth = 2
+  context.stroke()
+
+  context.fillStyle = '#9fb7d7'
+  context.font = '24px "Iowan Old Style", "Songti SC", "STSong", Georgia, serif'
+  context.fillText('DIGITAL ORACLE', 120, 156)
+  context.fillStyle = '#f6f0e8'
+  context.font = '56px "Iowan Old Style", "Songti SC", "STSong", Georgia, serif'
+  context.fillText('在静默中遇见答案', 120, 230)
+
+  const line = context.createLinearGradient(120, 0, 1080, 0)
+  line.addColorStop(0, 'rgba(159, 183, 215, 0)')
+  line.addColorStop(0.5, 'rgba(159, 183, 215, 0.68)')
+  line.addColorStop(1, 'rgba(159, 183, 215, 0)')
+  context.fillStyle = line
+  context.fillRect(120, 284, 960, 2)
+
+  drawTextLines(context, ['问题'], 120, 360, 28, 40, '#9fb7d7')
+  drawTextLines(context, questionLines, 120, 414, 40, 56)
+  drawTextLines(context, ['牌面'], 120, 620, 28, 40, '#9fb7d7')
+  drawTextLines(context, cardTextLines, 120, 680, 28, 42, '#e6edf9')
+  drawTextLines(context, ['解读'], 120, 1050, 28, 40, '#9fb7d7')
+  drawTextLines(context, reportLines, 120, 1110, 27, 40, '#f2eee8')
+  drawTextLines(context, [`保存于 ${date} · Tarot Journal`], 120, 1550, 22, 32, '#9aa7bd')
+
+  const png = canvas.toDataURL('image/png')
+  const link = document.createElement('a')
+  link.href = png
+  link.download = `oracle-reading-${reading.id}.png`
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
 }

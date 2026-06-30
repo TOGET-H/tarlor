@@ -7,14 +7,10 @@ import {
   latestInterpretation,
   meaningFor,
   normalizeSpread,
-  normalizeTheme,
-  oracleThemes,
   orientationLabels,
   positionLabels,
   spreadOptions,
-  type OracleTheme,
-  type SpreadType,
-  useOracleTheme
+  type SpreadType
 } from '~/utils/oracle'
 
 type DrawStage = 'prepare' | 'shuffling' | 'reveal'
@@ -28,7 +24,6 @@ function firstQueryValue(value: unknown) {
 
 const question = ref(String(firstQueryValue(route.query.question) || ''))
 const spreadType = ref<SpreadType>(normalizeSpread(firstQueryValue(route.query.spread)))
-const theme = useOracleTheme()
 const reading = ref<Reading | null>(null)
 const stage = ref<DrawStage>('prepare')
 const revealedIds = ref<number[]>([])
@@ -46,12 +41,6 @@ const followUpPrompts = [
   '这件事真正的阻碍是什么？',
   '未来三天我该关注什么？'
 ]
-
-const routeTheme = firstQueryValue(route.query.theme)
-
-if (routeTheme) {
-  theme.value = normalizeTheme(routeTheme)
-}
 
 const initialReadingId = firstQueryValue(route.query.reading)
 
@@ -89,17 +78,6 @@ function delay(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms))
 }
 
-function selectTheme(nextTheme: OracleTheme) {
-  theme.value = nextTheme
-  router.replace({
-    path: route.path,
-    query: {
-      ...route.query,
-      theme: nextTheme
-    }
-  })
-}
-
 async function drawCards() {
   error.value = ''
   exportError.value = ''
@@ -125,8 +103,7 @@ async function drawCards() {
     router.replace({
       path: '/draw',
       query: {
-        reading: result.id,
-        theme: theme.value
+        reading: result.id
       }
     })
   } catch (err) {
@@ -165,10 +142,7 @@ function resetReading() {
   stage.value = 'prepare'
   exportError.value = ''
   router.replace({
-    path: '/draw',
-    query: {
-      theme: theme.value
-    }
+    path: '/draw'
   })
 }
 
@@ -191,24 +165,12 @@ async function exportReading() {
 </script>
 
 <template>
-  <section class="oracle-page">
+  <section class="oracle-page draw-page">
     <div class="section-header">
       <div>
         <p class="eyebrow">Oracle Reading</p>
         <h1>抽牌仪式</h1>
         <p>写下问题，等待洗牌，亲手揭开牌面，再把这次解读保存为记录或长图。</p>
-      </div>
-      <div class="theme-dial">
-        <button
-          v-for="item in oracleThemes"
-          :key="item.key"
-          class="theme-dot"
-          :class="[item.key, { 'is-active': theme === item.key }]"
-          type="button"
-          @click="selectTheme(item.key)"
-        >
-          {{ item.name }}
-        </button>
       </div>
     </div>
 
