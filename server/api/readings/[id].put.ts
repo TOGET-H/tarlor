@@ -1,34 +1,8 @@
-import { createError, getRouterParam, readBody } from 'h3'
-import { parseId, requiredString, validateReadingStatus } from '../../utils/validation'
-import { prisma } from '../../utils/prisma'
+import { createError } from 'h3'
 
-export default defineEventHandler(async (event) => {
-  const id = parseId(getRouterParam(event, 'id'))
-  const body = await readBody(event)
-
-  const existing = await prisma.reading.findUnique({ where: { id } })
-
-  if (!existing) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: '没有找到这条记录'
-    })
-  }
-
-  return prisma.reading.update({
-    where: { id },
-    data: {
-      question: requiredString(body.question, 'question'),
-      status: validateReadingStatus(body.status)
-    },
-    include: {
-      cards: {
-        orderBy: { sortOrder: 'asc' },
-        include: { card: true }
-      },
-      interpretations: {
-        orderBy: { createdAt: 'desc' }
-      }
-    }
+export default defineEventHandler(() => {
+  throw createError({
+    statusCode: 405,
+    statusMessage: '抽牌记录只保存在当前浏览器'
   })
 })

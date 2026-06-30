@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Reading } from '~/types/tarot'
+import { deleteLocalReading, getLocalReadings } from '~/utils/localReadings'
 import {
   cardSummary,
   formatReadingDate,
@@ -11,32 +12,30 @@ import {
   tarotCardThumbnailUrl
 } from '~/utils/oracle'
 
-const { data: readings, refresh } = await useFetch<Reading[]>('/api/readings', {
-  default: () => []
-})
-
+const readings = ref<Reading[]>([])
 const error = ref('')
 
 const spreadLabels = Object.fromEntries(
   spreadOptions.map((spread) => [spread.value, spread.label])
 ) as Record<string, string>
 
-function getErrorMessage(err: unknown, fallback: string) {
-  const value = err as { statusMessage?: string, data?: { statusMessage?: string } }
-  return value.statusMessage || value.data?.statusMessage || fallback
+function refreshReadings() {
+  readings.value = getLocalReadings()
 }
 
-async function deleteReading(reading: Reading) {
+onMounted(refreshReadings)
+
+function deleteReading(reading: Reading) {
   error.value = ''
 
-  try {
-    await $fetch(`/api/readings/${reading.id}`, {
-      method: 'DELETE'
-    })
-    await refresh()
-  } catch (err) {
-    error.value = getErrorMessage(err, '删除记录失败')
+  const deleted = deleteLocalReading(reading.id)
+
+  if (!deleted) {
+    error.value = '删除记录失败，请确认这条记录仍存在于当前浏览器。'
+    return
   }
+
+  refreshReadings()
 }
 </script>
 
@@ -46,7 +45,7 @@ async function deleteReading(reading: Reading) {
       <div>
         <p class="eyebrow">Archive</p>
         <h1>解读记录</h1>
-        <p>每一次抽牌都会留在这里。打开记录可以继续编辑问题、归档状态，或导出长图。</p>
+        <p>每一次抽牌都会保存在当前浏览器。打开记录可以继续编辑问题、归档状态，或导出长图。</p>
       </div>
       <NuxtLink to="/draw">
         <button class="primary" type="button">新建抽牌</button>
@@ -100,7 +99,7 @@ async function deleteReading(reading: Reading) {
     <div v-else class="panel">
       <p class="eyebrow">Empty Archive</p>
       <h2>还没有保存任何解读</h2>
-      <p class="muted">从一次抽牌开始，系统会自动保存牌阵、牌面和解读内容。</p>
+      <p class="muted">从一次抽牌开始，系统会自动把牌阵、牌面和解读内容保存到当前浏览器。</p>
       <NuxtLink to="/draw">
         <button class="primary" type="button">开始占卜</button>
       </NuxtLink>

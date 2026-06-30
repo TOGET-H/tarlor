@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Reading } from '~/types/tarot'
+import { getLocalReading, updateLocalReading } from '~/utils/localReadings'
 import {
   downloadReadingImage,
   formatReadingDate,
@@ -14,12 +15,12 @@ import {
 const route = useRoute()
 const id = route.params.id
 
-const { data: reading, refresh, error: fetchError } = await useFetch<Reading>(`/api/readings/${id}`)
-
+const reading = ref<Reading | null>(null)
 const question = ref('')
 const status = ref('interpreted')
 const saving = ref(false)
 const exporting = ref(false)
+const loaded = ref(false)
 const saveError = ref('')
 const exportError = ref('')
 const brokenImageIds = ref<number[]>([])
@@ -28,12 +29,17 @@ const spreadLabels = Object.fromEntries(
   spreadOptions.map((spread) => [spread.value, spread.label])
 ) as Record<string, string>
 
-watchEffect(() => {
+function readLocalDetail() {
+  loaded.value = true
+  reading.value = getLocalReading(String(id))
+
   if (reading.value) {
     question.value = reading.value.question
     status.value = reading.value.status
   }
-})
+}
+
+onMounted(readLocalDetail)
 
 function getErrorMessage(err: unknown, fallback: string) {
   const value = err as { statusMessage?: string, data?: { statusMessage?: string } }
@@ -55,14 +61,16 @@ async function saveReading() {
   saving.value = true
 
   try {
-    await $fetch(`/api/readings/${id}`, {
-      method: 'PUT',
-      body: {
-        question: question.value,
-        status: status.value
-      }
+    const updated = updateLocalReading(String(id), {
+      question: question.value,
+      status: status.value
     })
-    await refresh()
+
+    if (!updated) {
+      throw new Error('保存记录失败')
+    }
+
+    reading.value = updated
   } catch (err) {
     saveError.value = getErrorMessage(err, '保存记录失败')
   } finally {
@@ -106,7 +114,7 @@ async function exportReading() {
       </div>
     </div>
 
-    <p v-if="fetchError" class="error">没有找到这条记录。</p>
+    <p v-if="loaded && !reading" class="error">没有在当前浏览器中找到这条记录。</p>
 
     <div v-else-if="reading" class="detail-layout">
       <aside class="panel form-grid">

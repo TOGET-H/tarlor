@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Reading } from '~/types/tarot'
+import { getLocalReading, saveLocalReading } from '~/utils/localReadings'
 import {
   cardSummary,
   downloadReadingImage,
@@ -29,6 +30,7 @@ const stage = ref<DrawStage>('prepare')
 const revealedIds = ref<number[]>([])
 const error = ref('')
 const exportError = ref('')
+const storageError = ref('')
 const drawing = ref(false)
 const exporting = ref(false)
 const followUp = ref('我该如何行动？')
@@ -44,21 +46,25 @@ const followUpPrompts = [
 
 const initialReadingId = firstQueryValue(route.query.reading)
 
-if (initialReadingId) {
-  const { data: savedReading, error: savedReadingError } = await useFetch<Reading>(
-    `/api/readings/${initialReadingId}`
-  )
+function loadLocalReading(value: unknown) {
+  const savedReading = getLocalReading(firstQueryValue(value) as string | number | undefined)
 
-  if (savedReading.value) {
-    reading.value = savedReading.value
-    question.value = savedReading.value.question
-    spreadType.value = normalizeSpread(savedReading.value.spreadType)
+  if (savedReading) {
+    reading.value = savedReading
+    question.value = savedReading.question
+    spreadType.value = normalizeSpread(savedReading.spreadType)
     stage.value = 'reveal'
     revealedIds.value = []
-  } else if (savedReadingError.value) {
-    error.value = '没有找到这条抽牌记录'
+  } else {
+    error.value = '没有找到这条本地抽牌记录'
   }
 }
+
+onMounted(() => {
+  if (initialReadingId) {
+    loadLocalReading(initialReadingId)
+  }
+})
 
 const selectedSpread = computed(() => {
   return spreadOptions.find((spread) => spread.value === spreadType.value) ?? spreadOptions[0]!
@@ -81,6 +87,7 @@ function delay(ms: number) {
 async function drawCards() {
   error.value = ''
   exportError.value = ''
+  storageError.value = ''
   reading.value = null
   revealedIds.value = []
   drawing.value = true
@@ -97,6 +104,12 @@ async function drawCards() {
       }),
       delay(1300)
     ])
+
+    const saved = saveLocalReading(result)
+
+    if (!saved) {
+      storageError.value = '浏览器没有允许本地保存，这次结果可以查看，但不会出现在记录页。'
+    }
 
     reading.value = result
     stage.value = 'reveal'
@@ -141,6 +154,7 @@ function resetReading() {
   revealedIds.value = []
   stage.value = 'prepare'
   exportError.value = ''
+  storageError.value = ''
   router.replace({
     path: '/draw'
   })
@@ -170,7 +184,7 @@ async function exportReading() {
       <div>
         <p class="eyebrow">Oracle Reading</p>
         <h1>抽牌仪式</h1>
-        <p>写下问题，等待洗牌，亲手揭开牌面，再把这次解读保存为记录或长图。</p>
+        <p>写下问题，等待洗牌，亲手揭开牌面，再把这次解读保存在当前浏览器或导出为长图。</p>
       </div>
     </div>
 
@@ -241,8 +255,9 @@ async function exportReading() {
             <p class="eyebrow">Step 02</p>
             <h2>揭示牌面</h2>
             <p class="muted">
-              已保存于 {{ formatReadingDate(reading.createdAt) }}。请依次翻开 {{ reading.cards.length }} 张牌。
+              已保存在当前浏览器：{{ formatReadingDate(reading.createdAt) }}。请依次翻开 {{ reading.cards.length }} 张牌。
             </p>
+            <p v-if="storageError" class="error">{{ storageError }}</p>
           </div>
           <div class="actions">
             <button type="button" @click="revealAll">全部翻开</button>
@@ -325,7 +340,7 @@ async function exportReading() {
             <p class="muted">{{ cardSummary(reading) }}</p>
 
             <div class="saved-actions">
-              <NuxtLink :to="`/readings/${reading.id}`">
+              <NuxtLink v-if="!storageError" :to="`/readings/${reading.id}`">
                 <button class="primary" type="button">打开保存记录</button>
               </NuxtLink>
               <button type="button" :disabled="exporting" @click="exportReading">

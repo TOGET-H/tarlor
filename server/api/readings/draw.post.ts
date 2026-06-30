@@ -18,6 +18,10 @@ function randomOrientation() {
   return Math.random() > 0.5 ? 'upright' : 'reversed'
 }
 
+function createLocalReadingId() {
+  return Date.now() * 1000 + Math.floor(Math.random() * 1000)
+}
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const question = requiredString(body.question, 'question')
@@ -42,39 +46,30 @@ export default defineEventHandler(async (event) => {
   }))
 
   const interpretation = buildMockInterpretation(question, spreadType, drawnCards)
+  const createdAt = new Date().toISOString()
+  const readingId = createLocalReadingId()
 
-  return prisma.reading.create({
-    data: {
-      question,
-      spreadType,
-      status: 'interpreted',
-      cards: {
-        create: drawnCards.map((entry) => ({
-          card: {
-            connect: {
-              id: entry.card.id
-            }
-          },
-          position: entry.position,
-          orientation: entry.orientation,
-          sortOrder: entry.sortOrder
-        }))
-      },
-      interpretations: {
-        create: {
-          provider: 'mock',
-          content: interpretation
-        }
+  return {
+    id: readingId,
+    question,
+    spreadType,
+    status: 'interpreted',
+    createdAt,
+    updatedAt: createdAt,
+    cards: drawnCards.map((entry, index) => ({
+      id: readingId + index + 1,
+      position: entry.position,
+      orientation: entry.orientation,
+      sortOrder: entry.sortOrder,
+      card: entry.card
+    })),
+    interpretations: [
+      {
+        id: readingId + drawnCards.length + 1,
+        provider: 'mock',
+        content: interpretation,
+        createdAt
       }
-    },
-    include: {
-      cards: {
-        orderBy: { sortOrder: 'asc' },
-        include: { card: true }
-      },
-      interpretations: {
-        orderBy: { createdAt: 'desc' }
-      }
-    }
-  })
+    ]
+  }
 })
