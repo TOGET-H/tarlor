@@ -249,13 +249,14 @@ async function exportReading() {
         </div>
       </div>
 
-      <div v-else-if="reading" class="draw-stage reveal-board">
+      <div v-else-if="reading" class="draw-stage reveal-board" :class="{ 'is-complete': allRevealed }">
         <div class="section-header">
           <div>
             <p class="eyebrow">Step 02</p>
-            <h2>揭示牌面</h2>
+            <h2>选择你的牌</h2>
             <p class="muted">
-              已保存在当前浏览器：{{ formatReadingDate(reading.createdAt) }}。请依次翻开 {{ reading.cards.length }} 张牌。
+              洗牌完成。{{ reading.cards.length }} 张牌已经铺开，请亲手翻开它们。
+              已保存在当前浏览器：{{ formatReadingDate(reading.createdAt) }}。
             </p>
             <p v-if="storageError" class="error">{{ storageError }}</p>
           </div>
@@ -265,54 +266,69 @@ async function exportReading() {
           </div>
         </div>
 
-        <div class="reveal-grid">
-          <article v-for="entry in reading.cards" :key="entry.id" class="reveal-card">
-            <button
-              class="flip-card"
+        <div class="reveal-spread-zone">
+          <div
+            class="reveal-grid"
+            :class="[`spread-count-${reading.cards.length}`, { 'is-complete': allRevealed }]"
+          >
+            <article
+              v-for="(entry, index) in reading.cards"
+              :key="entry.id"
+              class="reveal-card"
               :class="{ 'is-revealed': revealedIds.includes(entry.id) }"
-              type="button"
-              :aria-label="`翻开${positionLabels[entry.position] ?? entry.position}`"
-              @click="revealCard(entry.id)"
+              :style="{ '--card-index': index }"
             >
-              <span class="flip-inner">
-                <span class="flip-face">
-                  <span class="oracle-card-back" />
-                </span>
-                <span class="flip-face flip-front">
-                  <span class="card-face-art card-face-image">
-                    <img
-                      v-if="hasCardImage(entry.card.id, entry.card.imageUrl)"
-                      :src="entry.card.imageUrl || ''"
-                      :alt="entry.card.name"
-                      loading="lazy"
-                      @error="markBrokenImage(entry.card.id)"
-                    >
-                    <span v-else class="card-face-fallback">
-                      <span>{{ positionLabels[entry.position] ?? entry.position }}</span>
-                      <strong>{{ entry.card.name }}</strong>
-                      <span>{{ orientationLabels[entry.orientation] ?? entry.orientation }}</span>
+              <button
+                class="flip-card"
+                :class="{ 'is-revealed': revealedIds.includes(entry.id) }"
+                type="button"
+                :aria-label="`翻开${positionLabels[entry.position] ?? entry.position}`"
+                :aria-pressed="revealedIds.includes(entry.id)"
+                @click="revealCard(entry.id)"
+              >
+                <span class="flip-inner">
+                  <span class="flip-face">
+                    <span class="oracle-card-back" />
+                  </span>
+                  <span class="flip-face flip-front">
+                    <span class="card-face-art card-face-image">
+                      <img
+                        v-if="hasCardImage(entry.card.id, entry.card.imageUrl)"
+                        :src="entry.card.imageUrl || ''"
+                        :alt="entry.card.name"
+                        loading="lazy"
+                        @error="markBrokenImage(entry.card.id)"
+                      >
+                      <span v-else class="card-face-fallback">
+                        <span>{{ positionLabels[entry.position] ?? entry.position }}</span>
+                        <strong>{{ entry.card.name }}</strong>
+                        <span>{{ orientationLabels[entry.orientation] ?? entry.orientation }}</span>
+                      </span>
                     </span>
                   </span>
                 </span>
-              </span>
-            </button>
+              </button>
 
-            <div class="reveal-card-copy">
-              <span class="badge">
-                {{ positionLabels[entry.position] ?? entry.position }} · {{ orientationLabels[entry.orientation] ?? entry.orientation }}
-              </span>
-              <h3>{{ revealedIds.includes(entry.id) ? entry.card.name : '等待揭示' }}</h3>
-              <p>{{ revealedIds.includes(entry.id) ? meaningFor(entry) : '点击牌背翻开这一张牌。' }}</p>
-            </div>
-          </article>
+              <div class="reveal-card-copy">
+                <span class="badge">
+                  {{ positionLabels[entry.position] ?? entry.position }} · {{ orientationLabels[entry.orientation] ?? entry.orientation }}
+                </span>
+                <h3>{{ revealedIds.includes(entry.id) ? entry.card.name : '等待揭示' }}</h3>
+                <p>{{ revealedIds.includes(entry.id) ? meaningFor(entry) : '点击牌背翻开这一张牌。' }}</p>
+              </div>
+            </article>
+          </div>
+
+          <p class="reveal-status">
+            已翻开 {{ revealedCount }} / {{ reading.cards.length }} 张
+          </p>
         </div>
 
-        <div class="report-grid">
+        <div v-if="allRevealed" class="report-grid">
           <article class="report-panel">
             <p class="eyebrow">Interpretation</p>
             <h2>解读报告</h2>
-            <p v-if="!allRevealed" class="muted">翻开所有牌后，报告会完整呈现。你也可以直接全部翻开。</p>
-            <p v-else class="interpretation">{{ latestInterpretation(reading) }}</p>
+            <p class="interpretation">{{ latestInterpretation(reading) }}</p>
           </article>
 
           <aside class="report-panel followup-card">

@@ -1,5 +1,5 @@
 import { createError, readBody } from 'h3'
-import { buildMockInterpretation } from '../../services/interpretation'
+import { buildInterpretation } from '../../services/interpretation'
 import { requiredString, validateSpreadType } from '../../utils/validation'
 import { prisma } from '../../utils/prisma'
 
@@ -9,6 +9,12 @@ const spreadPositions = {
 } as const
 
 type SpreadType = keyof typeof spreadPositions
+
+type SiliconFlowRuntimeConfig = {
+  siliconflowApiKey?: string
+  siliconflowModel?: string
+  siliconflowApiUrl?: string
+}
 
 function shuffle<T>(items: T[]) {
   return [...items].sort(() => Math.random() - 0.5)
@@ -23,6 +29,7 @@ function createLocalReadingId() {
 }
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig(event) as unknown as SiliconFlowRuntimeConfig
   const body = await readBody(event)
   const question = requiredString(body.question, 'question')
   const spreadType = validateSpreadType(body.spreadType) as SpreadType
@@ -45,7 +52,11 @@ export default defineEventHandler(async (event) => {
     card
   }))
 
-  const interpretation = buildMockInterpretation(question, spreadType, drawnCards)
+  const interpretation = await buildInterpretation(question, spreadType, drawnCards, {
+    apiKey: config.siliconflowApiKey,
+    model: config.siliconflowModel,
+    apiUrl: config.siliconflowApiUrl
+  })
   const createdAt = new Date().toISOString()
   const readingId = createLocalReadingId()
 
@@ -66,8 +77,8 @@ export default defineEventHandler(async (event) => {
     interpretations: [
       {
         id: readingId + drawnCards.length + 1,
-        provider: 'mock',
-        content: interpretation,
+        provider: interpretation.provider,
+        content: interpretation.content,
         createdAt
       }
     ]

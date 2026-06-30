@@ -1127,44 +1127,111 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 
 .reveal-board {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
   gap: clamp(16px, 2.2vh, 24px);
   min-height: 0;
   overflow: hidden;
 }
 
+.reveal-board.is-complete {
+  grid-template-rows: auto minmax(0, 0.56fr) minmax(0, 0.44fr);
+}
+
 .reveal-board > .section-header {
-  grid-column: 1 / -1;
   margin-bottom: 0;
 }
 
-.reveal-grid {
+.reveal-spread-zone {
+  position: relative;
   display: grid;
   min-height: 0;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  grid-auto-columns: minmax(142px, 168px);
-  grid-auto-flow: column;
-  grid-template-columns: none;
-  gap: 16px;
-  justify-content: start;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  overflow: hidden;
+}
+
+.reveal-spread-zone::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(720px, 78%);
+  height: min(220px, 42%);
+  transform: translate(-50%, -42%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, var(--accent-glow), transparent 68%),
+    linear-gradient(90deg, transparent, rgb(var(--accent-rgb) / 0.12), transparent);
+  filter: blur(8px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.reveal-grid {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 0;
+  height: 100%;
+  overflow: visible;
+  gap: clamp(18px, 3vw, 42px);
+  justify-content: center;
+  align-items: center;
+  padding: clamp(10px, 2vh, 20px) clamp(8px, 2vw, 24px);
+  transition: gap 360ms ease, padding 360ms ease;
+}
+
+.reveal-grid.is-complete {
+  gap: clamp(12px, 1.8vw, 24px);
   align-items: start;
-  padding-bottom: 8px;
+  padding-top: 4px;
 }
 
 .reveal-card {
+  --card-index: 0;
+  --spread-rotate: 0deg;
+  --spread-y: 0px;
   display: grid;
-  gap: 8px;
-  width: 100%;
+  width: clamp(132px, 18svh, 184px);
   min-height: 0;
+  gap: 10px;
+  transform: translateY(var(--spread-y)) rotate(var(--spread-rotate));
+  transform-origin: 50% 86%;
+  animation: dealSpreadCard 640ms cubic-bezier(0.2, 0.72, 0.2, 1) both;
+  animation-delay: calc(var(--card-index) * 120ms);
+  transition: width 360ms ease, transform 280ms ease, filter 280ms ease;
+}
+
+.reveal-grid.spread-count-3 .reveal-card:nth-child(1) {
+  --spread-rotate: -7deg;
+  --spread-y: 16px;
+}
+
+.reveal-grid.spread-count-3 .reveal-card:nth-child(2) {
+  --spread-rotate: 0deg;
+  --spread-y: -8px;
+}
+
+.reveal-grid.spread-count-3 .reveal-card:nth-child(3) {
+  --spread-rotate: 7deg;
+  --spread-y: 16px;
+}
+
+.reveal-grid.is-complete .reveal-card {
+  width: clamp(94px, 11.5svh, 122px);
+}
+
+.reveal-card:not(.is-revealed):hover {
+  transform: translateY(calc(var(--spread-y) - 8px)) rotate(var(--spread-rotate));
+  filter: drop-shadow(0 16px 24px rgb(var(--accent-rgb) / 0.18));
 }
 
 .flip-card {
   position: relative;
   display: block;
-  width: min(100%, 168px);
+  width: 100%;
   aspect-ratio: 300 / 527;
   margin: 0 auto;
   border: 0;
@@ -1273,6 +1340,8 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 .reveal-card-copy {
   display: grid;
   gap: 6px;
+  min-width: 0;
+  text-align: center;
 }
 
 .reveal-card-copy h3 {
@@ -1290,14 +1359,32 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   -webkit-line-clamp: 2;
 }
 
+.reveal-grid.is-complete .reveal-card-copy h3 {
+  font-size: 16px;
+}
+
+.reveal-grid.is-complete .reveal-card-copy p {
+  -webkit-line-clamp: 1;
+}
+
+.reveal-status {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
 .report-grid {
   display: grid;
   min-height: 0;
   height: 100%;
   overflow: hidden;
-  grid-template-columns: minmax(220px, 0.75fr) minmax(310px, 1fr);
+  grid-template-columns: minmax(260px, 0.95fr) minmax(310px, 1fr);
   grid-template-rows: minmax(0, 1fr);
   gap: 16px;
+  animation: revealReport 420ms ease both;
 }
 
 .report-panel {
@@ -1796,12 +1883,43 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   }
 }
 
+@keyframes dealSpreadCard {
+  0% {
+    opacity: 0;
+    transform: translateY(48px) rotate(0deg) scale(0.92);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(var(--spread-y)) rotate(var(--spread-rotate)) scale(1);
+  }
+}
+
+@keyframes revealReport {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-shell::before,
   .app-shell::after,
   .ring-inner,
-  .breath-ring::before {
+  .breath-ring::before,
+  .reveal-card,
+  .report-grid {
     animation: none;
+  }
+
+  .flip-inner,
+  .reveal-card {
+    transition: none;
   }
 }
 
@@ -1841,7 +1959,11 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 
   .reveal-board {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 0.58fr) minmax(0, 0.42fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .reveal-board.is-complete {
+    grid-template-rows: auto minmax(0, 0.52fr) minmax(0, 0.48fr);
   }
 
   .report-grid {
