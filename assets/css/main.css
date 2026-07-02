@@ -831,19 +831,25 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
+  filter: drop-shadow(0 0 18px rgb(var(--accent-rgb) / 0.24));
+  isolation: isolate;
 }
 
 .ring-inner {
-  width: calc(var(--breath-orb-size) * 0.66);
-  height: calc(var(--breath-orb-size) * 0.66);
+  position: relative;
+  z-index: 2;
+  width: calc(var(--breath-orb-size) * 0.8);
+  height: calc(var(--breath-orb-size) * 0.8);
   border: 2px solid var(--accent-border-strong);
   border-radius: 50%;
   background:
-    radial-gradient(circle, rgb(var(--accent-rgb) / 0.32) 0 22%, transparent 68%),
-    radial-gradient(circle, rgb(var(--accent-rgb) / 0.2), transparent 72%);
+    radial-gradient(circle at 50% 50%, rgb(var(--accent-rgb) / 0.52) 0 16%, transparent 45%),
+    radial-gradient(circle, rgb(var(--accent-rgb) / 0.3), transparent 72%),
+    conic-gradient(from 18deg, transparent 0 16%, rgb(var(--accent-rgb) / 0.22) 18% 24%, transparent 28% 50%, rgb(var(--accent-rgb) / 0.18) 54% 60%, transparent 64% 100%);
   box-shadow:
-    0 0 34px rgb(var(--accent-rgb) / 0.28),
-    inset 0 0 24px rgb(var(--accent-rgb) / 0.2);
+    0 0 46px rgb(var(--accent-rgb) / 0.4),
+    0 0 86px rgb(var(--accent-rgb) / 0.22),
+    inset 0 0 34px rgb(var(--accent-rgb) / 0.3);
   animation: breathe 4s ease-in-out infinite;
   transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
 }
@@ -853,17 +859,22 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: var(--breath-orb-size);
-  height: var(--breath-orb-size);
-  border: 2px solid var(--accent-border);
+  z-index: 1;
+  width: calc(var(--breath-orb-size) * 1.12);
+  height: calc(var(--breath-orb-size) * 1.12);
+  border: 3px solid rgb(var(--accent-rgb) / 0.48);
   border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 52%, rgb(var(--accent-rgb) / 0.12) 68%, transparent 70%),
+    radial-gradient(circle, rgb(var(--accent-rgb) / 0.1), transparent 72%);
   box-shadow:
-    0 0 42px rgb(var(--accent-rgb) / 0.2),
-    inset 0 0 34px rgb(var(--accent-rgb) / 0.12);
+    0 0 58px rgb(var(--accent-rgb) / 0.3),
+    0 0 112px rgb(var(--accent-rgb) / 0.16),
+    inset 0 0 42px rgb(var(--accent-rgb) / 0.18);
   translate: -50% -50%;
   animation: breathe 4s ease-in-out infinite;
   animation-delay: 0.5s;
-  transition: border-color 260ms ease, box-shadow 260ms ease;
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
 }
 
 .breath-ring::after {
@@ -871,16 +882,20 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: calc(var(--breath-orb-size) * 0.82);
-  height: calc(var(--breath-orb-size) * 0.82);
-  border: 1px solid rgb(var(--accent-rgb) / 0.28);
+  z-index: 0;
+  width: calc(var(--breath-orb-size) * 0.98);
+  height: calc(var(--breath-orb-size) * 0.98);
+  border: 1px solid rgb(var(--accent-rgb) / 0.42);
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.16), transparent 66%);
+  background:
+    radial-gradient(circle, rgb(var(--accent-rgb) / 0.18), transparent 62%),
+    conic-gradient(from 0deg, transparent 0 11%, rgb(var(--accent-rgb) / 0.24) 13% 18%, transparent 20% 36%, rgb(var(--accent-rgb) / 0.2) 40% 45%, transparent 48% 100%);
+  box-shadow: 0 0 34px rgb(var(--accent-rgb) / 0.22);
   translate: -50% -50%;
   animation: breathe 4s ease-in-out infinite reverse;
   animation-delay: 0.25s;
   pointer-events: none;
-  transition: border-color 260ms ease, background 260ms ease;
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
 }
 
 .card-label {
@@ -1912,6 +1927,7 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   .app-shell::after,
   .ring-inner,
   .breath-ring::before,
+  .breath-ring::after,
   .reveal-card,
   .report-grid {
     animation: none;
