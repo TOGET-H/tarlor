@@ -439,64 +439,60 @@ textarea {
   --gem-mid: #c8d2e0;
   --gem-dark: #718896;
   --gem-glow: rgba(245, 249, 255, 0.5);
+  --gem-sprite-position: 100% 100%;
   position: relative;
-  width: 18px;
-  min-width: 18px;
-  height: 18px;
-  min-height: 18px;
-  border: 0;
-  border-radius: 0;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border: 1px solid rgb(var(--accent-rgb) / 0.22);
+  border-radius: 10px;
   appearance: none;
   -webkit-appearance: none;
   padding: 0;
   overflow: hidden;
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0 16%, transparent 17%),
-    linear-gradient(45deg, rgba(255, 255, 255, 0.22) 0 35%, transparent 36%),
-    linear-gradient(135deg, transparent 0 58%, rgba(0, 0, 0, 0.28) 59% 100%),
-    linear-gradient(135deg, var(--gem-light), var(--gem-mid) 52%, var(--gem-dark));
+  background-image: url("/tarot/ChatGPT Image 2026年7月2日 19_56_55.png");
+  background-position: var(--gem-sprite-position);
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
   box-shadow: none;
   cursor: pointer;
   opacity: 0.72;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.34));
-  transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
+  filter: saturate(0.92) brightness(0.86) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.34));
+  transition: border-color 180ms ease, opacity 180ms ease, filter 180ms ease, transform 180ms ease;
 }
 
 .theme-gem::before {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  background:
-    linear-gradient(90deg, transparent 0 47%, rgba(255, 255, 255, 0.42) 48% 52%, transparent 53%),
-    linear-gradient(0deg, transparent 0 47%, rgba(255, 255, 255, 0.22) 48% 52%, transparent 53%);
-  opacity: 0.72;
+  content: none;
 }
 
 .theme-gem::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  width: 6px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.78);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  opacity: 0.86;
+  content: none;
 }
 
 .theme-gem:hover:not(:disabled) {
   opacity: 1;
-  filter: drop-shadow(0 0 8px var(--gem-glow)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.34));
-  transform: scale(1.15);
+  border-color: rgb(var(--accent-rgb) / 0.46);
+  background-color: transparent;
+  background-image: url("/tarot/ChatGPT Image 2026年7月2日 19_56_55.png");
+  background-position: var(--gem-sprite-position);
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  filter: saturate(1.08) brightness(1.05) drop-shadow(0 0 8px var(--gem-glow)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.34));
+  transform: translateY(-1px) scale(1.08);
 }
 
 .theme-gem.active {
   opacity: 1;
-  filter: drop-shadow(0 0 9px var(--gem-glow)) drop-shadow(0 0 4px rgb(var(--accent-rgb) / 0.26));
-  transform: scale(1.08);
+  border-color: rgb(var(--accent-rgb) / 0.62);
+  background-color: transparent;
+  background-image: url("/tarot/ChatGPT Image 2026年7月2日 19_56_55.png");
+  background-position: var(--gem-sprite-position);
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  box-shadow: 0 0 0 2px rgb(var(--accent-rgb) / 0.2);
+  filter: saturate(1.14) brightness(1.08) drop-shadow(0 0 10px var(--gem-glow)) drop-shadow(0 0 5px rgb(var(--accent-rgb) / 0.32));
+  transform: scale(1.04);
 }
 
 .gem-white {
@@ -504,6 +500,7 @@ textarea {
   --gem-mid: #c8d2e0;
   --gem-dark: #718896;
   --gem-glow: rgba(245, 249, 255, 0.58);
+  --gem-sprite-position: 100% 100%;
 }
 
 .gem-pink {
@@ -511,6 +508,7 @@ textarea {
   --gem-mid: #d5929d;
   --gem-dark: #b87888;
   --gem-glow: rgba(245, 198, 198, 0.58);
+  --gem-sprite-position: 0 0;
 }
 
 .gem-green {
@@ -518,6 +516,7 @@ textarea {
   --gem-mid: #9bcc83;
   --gem-dark: #6a9e6c;
   --gem-glow: rgba(200, 230, 201, 0.52);
+  --gem-sprite-position: 0 100%;
 }
 
 .gem-purple {
@@ -525,6 +524,7 @@ textarea {
   --gem-mid: #a889d0;
   --gem-dark: #7c58a9;
   --gem-glow: rgba(209, 196, 233, 0.58);
+  --gem-sprite-position: 100% 0;
 }
 
 .page {
@@ -1106,6 +1106,16 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   overflow: auto;
 }
 
+.draw-submit-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.draw-submit-actions .primary {
+  width: 100%;
+  min-height: 48px;
+}
+
 .draw-prep .oracle-card-back.large {
   width: clamp(176px, 24svh, 236px);
 }
@@ -1150,10 +1160,17 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 }
 
 .reveal-board.is-complete {
-  grid-template-rows: auto minmax(0, 0.56fr) minmax(0, 0.44fr);
+  grid-template-columns: minmax(280px, 0.82fr) minmax(420px, 1.18fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.reveal-board.is-choosing {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .reveal-board > .section-header {
+  grid-column: 1 / -1;
   margin-bottom: 0;
 }
 
@@ -1184,6 +1201,169 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   pointer-events: none;
 }
 
+.reveal-board.is-complete .reveal-spread-zone {
+  grid-column: 1;
+  grid-row: 2;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgb(var(--accent-rgb) / 0.045);
+  padding: clamp(12px, 2vh, 18px);
+  transition: border-color 260ms ease, background 260ms ease;
+}
+
+.choice-spread-zone {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  overflow: hidden;
+}
+
+.choice-spread-zone::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(820px, 82%);
+  height: min(320px, 64%);
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, var(--accent-glow), transparent 64%),
+    linear-gradient(90deg, transparent, rgb(var(--accent-rgb) / 0.14), transparent);
+  filter: blur(10px);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.choice-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-height: 0;
+  width: min(100%, 820px);
+  justify-content: center;
+  align-content: center;
+  justify-self: center;
+  gap: clamp(12px, 1.8vw, 20px);
+  padding: clamp(10px, 2vh, 20px);
+}
+
+.choice-grid.choice-count-7 {
+  grid-template-columns: repeat(7, minmax(68px, 98px));
+}
+
+.choice-grid.choice-count-12 {
+  grid-template-columns: repeat(6, minmax(72px, 108px));
+}
+
+.choice-card.oracle-card-back {
+  --spread-rotate: 0deg;
+  --spread-y: 0px;
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  border-radius: 14px;
+  background:
+    url("/tarot/card-back-clock.png") center / cover no-repeat,
+    #0b1018;
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, 0.46),
+    0 0 28px rgb(var(--accent-rgb) / 0.16);
+  padding: 0;
+  transform: translateY(0) rotate(0deg);
+  animation: dealSpreadCard 560ms cubic-bezier(0.2, 0.72, 0.2, 1) both;
+  animation-delay: calc(var(--card-index) * 42ms);
+  transition:
+    border-color 260ms ease,
+    box-shadow 260ms ease,
+    filter 260ms ease,
+    opacity 260ms ease,
+    transform 260ms ease;
+}
+
+.choice-card.oracle-card-back:hover:not(:disabled) {
+  border-color: var(--accent-border-strong);
+  background:
+    url("/tarot/card-back-clock.png") center / cover no-repeat,
+    #0b1018;
+  box-shadow:
+    0 26px 50px rgba(0, 0, 0, 0.42),
+    0 0 34px rgb(var(--accent-rgb) / 0.26);
+  transform: translateY(-10px);
+}
+
+.choice-card.is-picked {
+  border-color: var(--accent);
+  background:
+    url("/tarot/card-back-clock.png") center / cover no-repeat,
+    #0b1018;
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.48),
+    0 0 0 2px rgb(var(--accent-rgb) / 0.38),
+    0 0 44px rgb(var(--accent-rgb) / 0.34);
+  filter: none;
+  opacity: 1;
+  transform: translateY(-14px);
+}
+
+.choice-card.is-picked:hover:not(:disabled) {
+  border-color: var(--accent);
+  background:
+    url("/tarot/card-back-clock.png") center / cover no-repeat,
+    #0b1018;
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.48),
+    0 0 0 2px rgb(var(--accent-rgb) / 0.38),
+    0 0 44px rgb(var(--accent-rgb) / 0.34);
+  cursor: default;
+  filter: none;
+  opacity: 1;
+  transform: translateY(-14px);
+}
+
+.choice-card.is-picked:disabled {
+  background:
+    url("/tarot/card-back-clock.png") center / cover no-repeat,
+    #0b1018;
+  cursor: default;
+  filter: none;
+  opacity: 1;
+}
+
+.choice-card.is-locked {
+  filter: none;
+  opacity: 0.38;
+}
+
+.choice-card-mark {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  display: inline-flex;
+  min-width: 30px;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(var(--accent-rgb) / 0.34);
+  border-radius: 999px;
+  background: rgba(6, 9, 14, 0.62);
+  color: rgba(246, 240, 231, 0.84);
+  font-size: 12px;
+  line-height: 1;
+  padding: 0 8px;
+  transform: translateX(-50%);
+  transition: border-color 260ms ease, background 260ms ease, color 260ms ease;
+}
+
+.choice-card.is-picked .choice-card-mark {
+  border-color: var(--accent);
+  background: rgb(var(--accent-rgb) / 0.22);
+  color: var(--accent-strong);
+}
+
 .reveal-grid {
   position: relative;
   z-index: 1;
@@ -1199,9 +1379,13 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 }
 
 .reveal-grid.is-complete {
-  gap: clamp(12px, 1.8vw, 24px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  align-content: center;
   align-items: start;
-  padding-top: 4px;
+  overflow: auto;
+  gap: clamp(12px, 1.6vw, 18px);
+  padding: 4px;
 }
 
 .reveal-card {
@@ -1235,7 +1419,13 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 }
 
 .reveal-grid.is-complete .reveal-card {
-  width: clamp(94px, 11.5svh, 122px);
+  width: min(100%, 148px);
+  justify-self: center;
+  transform: none;
+}
+
+.reveal-grid.is-complete .reveal-card:hover {
+  transform: translateY(-4px);
 }
 
 .reveal-card:not(.is-revealed):hover {
@@ -1257,6 +1447,7 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 }
 
 .flip-card:hover:not(:disabled) {
+  background: transparent;
   box-shadow: none;
 }
 
@@ -1291,6 +1482,12 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   height: 100%;
   aspect-ratio: auto;
   border-radius: inherit;
+  background:
+    url("/tarot/card-back-clock.png") center / cover no-repeat,
+    #0b1018;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.42),
+    0 0 28px rgb(var(--accent-rgb) / 0.18);
 }
 
 .flip-front {
@@ -1375,11 +1572,15 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 }
 
 .reveal-grid.is-complete .reveal-card-copy h3 {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .reveal-grid.is-complete .reveal-card-copy p {
-  -webkit-line-clamp: 1;
+  display: block;
+  overflow: visible;
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-line-clamp: unset;
 }
 
 .reveal-status {
@@ -1392,13 +1593,15 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 }
 
 .report-grid {
+  position: relative;
   display: grid;
   min-height: 0;
   height: 100%;
   overflow: hidden;
-  grid-template-columns: minmax(260px, 0.95fr) minmax(310px, 1fr);
+  grid-column: 2;
+  grid-row: 2;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
-  gap: 16px;
   animation: revealReport 420ms ease both;
 }
 
@@ -1412,14 +1615,72 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   transition: border-color 260ms ease, background 260ms ease;
 }
 
+.interpretation-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: 14px;
+}
+
+.report-panel-head,
+.followup-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.report-panel-head h2,
+.followup-head h3 {
+  margin-bottom: 0;
+}
+
+.followup-trigger {
+  flex: 0 0 auto;
+}
+
 .interpretation {
+  min-height: 0;
+  margin: 0;
+  overflow: auto;
   white-space: pre-line;
   line-height: 1.9;
+  padding-right: 6px;
 }
 
 .followup-card {
   display: grid;
   gap: 14px;
+}
+
+.followup-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  min-height: 0;
+  border: 0;
+  border-radius: 24px;
+  background: rgba(2, 3, 6, 0.18);
+  padding: 0;
+}
+
+.followup-scrim:hover:not(:disabled) {
+  border: 0;
+  background: rgba(2, 3, 6, 0.18);
+  box-shadow: none;
+  transform: none;
+}
+
+.followup-popover {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 3;
+  width: min(390px, calc(100% - 28px));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.42),
+    0 0 40px rgb(var(--accent-rgb) / 0.14);
+  animation: revealReport 220ms ease both;
 }
 
 .prompt-chips {
@@ -1928,6 +2189,7 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   .ring-inner,
   .breath-ring::before,
   .breath-ring::after,
+  .choice-card,
   .reveal-card,
   .report-grid {
     animation: none;
@@ -1979,12 +2241,25 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   }
 
   .reveal-board.is-complete {
-    grid-template-rows: auto minmax(0, 0.52fr) minmax(0, 0.48fr);
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(220px, 0.46fr) minmax(0, 0.54fr);
+  }
+
+  .reveal-board.is-complete .reveal-spread-zone {
+    grid-column: 1;
+    grid-row: 2;
   }
 
   .report-grid {
+    grid-column: 1;
+    grid-row: 3;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(132px, 0.36fr) minmax(0, 0.64fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .choice-grid.choice-count-7,
+  .choice-grid.choice-count-12 {
+    grid-template-columns: repeat(4, minmax(72px, 104px));
   }
 
   .hero-oracle {
@@ -2073,10 +2348,10 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
   }
 
   .theme-gem {
-    width: 22px;
-    min-width: 22px;
-    height: 22px;
-    min-height: 22px;
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    min-height: 30px;
   }
 
   .nav-btn {
@@ -2162,6 +2437,35 @@ button.ritual-card.card-meditation:hover:not(:disabled) {
 
   .oracle-card-back.large {
     width: 208px;
+  }
+
+  .choice-grid {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 12px;
+  }
+
+  .choice-card.oracle-card-back {
+    flex: 0 0 96px;
+  }
+
+  .report-panel-head,
+  .followup-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .followup-trigger {
+    width: 100%;
+  }
+
+  .followup-popover {
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: calc(100% - 16px);
   }
 
   .reveal-grid {

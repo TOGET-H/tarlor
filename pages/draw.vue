@@ -14,7 +14,7 @@ import {
   type SpreadType
 } from '~/utils/oracle'
 
-type DrawStage = 'prepare' | 'shuffling' | 'reveal'
+type DrawStage = 'prepare' | 'shuffling' | 'choose' | 'reveal'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,11 +28,13 @@ const spreadType = ref<SpreadType>(normalizeSpread(firstQueryValue(route.query.s
 const reading = ref<Reading | null>(null)
 const stage = ref<DrawStage>('prepare')
 const revealedIds = ref<number[]>([])
+const selectedChoiceIndexes = ref<number[]>([])
 const error = ref('')
 const exportError = ref('')
 const storageError = ref('')
 const drawing = ref(false)
 const exporting = ref(false)
+const followUpOpen = ref(false)
 const followUp = ref('我该如何行动？')
 const readerNote = ref('')
 const brokenImageIds = ref<number[]>([])
@@ -45,6 +47,14 @@ const followUpPrompts = [
 ]
 
 const initialReadingId = firstQueryValue(route.query.reading)
+let choiceRevealTimer: ReturnType<typeof setTimeout> | null = null
+
+function clearChoiceRevealTimer() {
+  if (choiceRevealTimer) {
+    clearTimeout(choiceRevealTimer)
+    choiceRevealTimer = null
+  }
+}
 
 function loadLocalReading(value: unknown) {
   const savedReading = getLocalReading(firstQueryValue(value) as string | number | undefined)
@@ -55,6 +65,8 @@ function loadLocalReading(value: unknown) {
     spreadType.value = normalizeSpread(savedReading.spreadType)
     stage.value = 'reveal'
     revealedIds.value = []
+    selectedChoiceIndexes.value = savedReading.cards.map((_, index) => index)
+    followUpOpen.value = false
   } else {
     error.value = '没有找到这条本地抽牌记录'
   }
@@ -66,6 +78,10 @@ onMounted(() => {
   }
 })
 
+onBeforeUnmount(() => {
+  clearChoiceRevealTimer()
+})
+
 const selectedSpread = computed(() => {
   return spreadOptions.find((spread) => spread.value === spreadType.value) ?? spreadOptions[0]!
 })
@@ -73,6 +89,16 @@ const selectedSpread = computed(() => {
 const revealedCount = computed(() => revealedIds.value.length)
 const allRevealed = computed(() => {
   return Boolean(reading.value && revealedCount.value >= reading.value.cards.length)
+})
+const requiredChoiceCount = computed(() => reading.value?.cards.length ?? 0)
+const selectedChoiceCount = computed(() => selectedChoiceIndexes.value.length)
+const choiceSlots = computed(() => {
+  const count = requiredChoiceCount.value <= 1 ? 7 : 12
+
+  return Array.from({ length: count }, (_, index) => index)
+})
+const choiceComplete = computed(() => {
+  return Boolean(reading.value && selectedChoiceCount.value >= requiredChoiceCount.value)
 })
 
 function getErrorMessage(err: unknown, fallback: string) {
@@ -90,6 +116,9 @@ async function drawCards() {
   storageError.value = ''
   reading.value = null
   revealedIds.value = []
+  selectedChoiceIndexes.value = []
+  followUpOpen.value = false
+  clearChoiceRevealTimer()
   drawing.value = true
   stage.value = 'shuffling'
 
@@ -112,7 +141,7 @@ async function drawCards() {
     }
 
     reading.value = result
-    stage.value = 'reveal'
+    stage.value = 'choose'
     router.replace({
       path: '/draw',
       query: {
@@ -124,6 +153,29 @@ async function drawCards() {
     stage.value = 'prepare'
   } finally {
     drawing.value = false
+  }
+}
+
+function selectedChoiceOrder(slotIndex: number) {
+  const index = selectedChoiceIndexes.value.indexOf(slotIndex)
+
+  return index >= 0 ? index + 1 : 0
+}
+
+function selectChoice(slotIndex: number) {
+  if (!reading.value || stage.value !== 'choose' || selectedChoiceIndexes.value.includes(slotIndex) || choiceComplete.value) {
+    return
+  }
+
+  selectedChoiceIndexes.value = [...selectedChoiceIndexes.value, slotIndex]
+
+  if (selectedChoiceIndexes.value.length >= requiredChoiceCount.value) {
+    clearChoiceRevealTimer()
+    choiceRevealTimer = setTimeout(() => {
+      stage.value = 'reveal'
+      followUpOpen.value = false
+      choiceRevealTimer = null
+    }, 420)
   }
 }
 
@@ -145,13 +197,29 @@ function markBrokenImage(cardId: number) {
 
 function revealAll() {
   if (reading.value) {
+    stage.value = 'reveal'
     revealedIds.value = reading.value.cards.map((entry) => entry.id)
   }
 }
 
+function restartChoice() {
+  if (!reading.value) {
+    return
+  }
+
+  clearChoiceRevealTimer()
+  selectedChoiceIndexes.value = []
+  revealedIds.value = []
+  followUpOpen.value = false
+  stage.value = 'choose'
+}
+
 function resetReading() {
+  clearChoiceRevealTimer()
   reading.value = null
   revealedIds.value = []
+  selectedChoiceIndexes.value = []
+  followUpOpen.value = false
   stage.value = 'prepare'
   exportError.value = ''
   storageError.value = ''
@@ -221,13 +289,10 @@ async function exportReading() {
 
           <p v-if="error" class="error">{{ error }}</p>
 
-          <div class="actions">
+          <div class="actions draw-submit-actions">
             <button class="primary" type="submit" :disabled="drawing">
               {{ drawing ? '洗牌中...' : '开始占卜' }}
             </button>
-            <NuxtLink to="/readings">
-              <button class="ghost" type="button">查看记录</button>
-            </NuxtLink>
           </div>
         </form>
 
@@ -249,24 +314,61 @@ async function exportReading() {
         </div>
       </div>
 
-      <div v-else-if="reading" class="draw-stage reveal-board" :class="{ 'is-complete': allRevealed }">
+      <div
+        v-else-if="reading"
+        class="draw-stage reveal-board"
+        :class="{ 'is-complete': allRevealed, 'is-choosing': stage === 'choose' }"
+      >
         <div class="section-header">
           <div>
-            <p class="eyebrow">Step 02</p>
-            <h2>选择你的牌</h2>
-            <p class="muted">
+            <p class="eyebrow">{{ stage === 'choose' ? 'Step 02' : 'Step 03' }}</p>
+            <h2>{{ stage === 'choose' ? '选择你的牌' : '亲手翻开牌面' }}</h2>
+            <p v-if="stage === 'choose'" class="muted">
+              洗牌完成。请从 {{ choiceSlots.length }} 张牌背中选出 {{ requiredChoiceCount }} 张，
+              已选择 {{ selectedChoiceCount }} / {{ requiredChoiceCount }} 张。
+            </p>
+            <p v-else class="muted">
               洗牌完成。{{ reading.cards.length }} 张牌已经铺开，请亲手翻开它们。
               已保存在当前浏览器：{{ formatReadingDate(reading.createdAt) }}。
             </p>
             <p v-if="storageError" class="error">{{ storageError }}</p>
           </div>
           <div class="actions">
-            <button type="button" @click="revealAll">全部翻开</button>
+            <button v-if="stage === 'reveal'" type="button" @click="revealAll">全部翻开</button>
+            <button v-if="stage === 'reveal' && !revealedCount" type="button" @click="restartChoice">重新选牌</button>
             <button type="button" @click="resetReading">重新提问</button>
           </div>
         </div>
 
-        <div class="reveal-spread-zone">
+        <div v-if="stage === 'choose'" class="choice-spread-zone">
+          <div class="choice-grid" :class="`choice-count-${choiceSlots.length}`">
+            <button
+              v-for="slotIndex in choiceSlots"
+              :key="slotIndex"
+              class="choice-card oracle-card-back"
+              :class="{
+                'is-picked': selectedChoiceIndexes.includes(slotIndex),
+                'is-locked': choiceComplete && !selectedChoiceIndexes.includes(slotIndex)
+              }"
+              :style="{ '--card-index': slotIndex }"
+              type="button"
+              :disabled="choiceComplete && !selectedChoiceIndexes.includes(slotIndex)"
+              :aria-pressed="Boolean(selectedChoiceOrder(slotIndex))"
+              :aria-label="selectedChoiceOrder(slotIndex) ? `已选择第${selectedChoiceOrder(slotIndex)}张牌` : `选择第${slotIndex + 1}张牌背`"
+              @click="selectChoice(slotIndex)"
+            >
+              <span class="choice-card-mark">
+                {{ selectedChoiceOrder(slotIndex) ? `第 ${selectedChoiceOrder(slotIndex)} 张` : slotIndex + 1 }}
+              </span>
+            </button>
+          </div>
+
+          <p class="reveal-status">
+            {{ choiceComplete ? '牌已落位，准备翻开。' : `已选择 ${selectedChoiceCount} / ${requiredChoiceCount} 张` }}
+          </p>
+        </div>
+
+        <div v-else class="reveal-spread-zone">
           <div
             class="reveal-grid"
             :class="[`spread-count-${reading.cards.length}`, { 'is-complete': allRevealed }]"
@@ -325,15 +427,55 @@ async function exportReading() {
         </div>
 
         <div v-if="allRevealed" class="report-grid">
-          <article class="report-panel">
-            <p class="eyebrow">Interpretation</p>
-            <h2>解读报告</h2>
+          <article class="report-panel interpretation-panel">
+            <div class="report-panel-head">
+              <div>
+                <p class="eyebrow">Interpretation</p>
+                <h2>解读报告</h2>
+              </div>
+              <button class="ghost followup-trigger" type="button" @click="followUpOpen = true">
+                追问 / 补充
+              </button>
+            </div>
             <p class="interpretation">{{ latestInterpretation(reading) }}</p>
+
+            <p class="muted">{{ cardSummary(reading) }}</p>
+
+            <div class="saved-actions">
+              <NuxtLink v-if="!storageError" :to="`/readings/${reading.id}`">
+                <button class="primary" type="button">打开保存记录</button>
+              </NuxtLink>
+              <button type="button" :disabled="exporting" @click="exportReading">
+                {{ exporting ? '生成中...' : '保存解读长图' }}
+              </button>
+            </div>
+            <p v-if="exportError" class="export-error">{{ exportError }}</p>
           </article>
 
-          <aside class="report-panel followup-card">
-            <p class="eyebrow">Follow Up</p>
-            <h3>帮助我们做得更好</h3>
+          <button
+            v-if="followUpOpen"
+            class="followup-scrim"
+            type="button"
+            aria-label="关闭追问面板"
+            @click="followUpOpen = false"
+          />
+
+          <aside
+            v-if="followUpOpen"
+            class="report-panel followup-card followup-popover"
+            role="dialog"
+            aria-label="追问和补充"
+          >
+            <div class="followup-head">
+              <div>
+                <p class="eyebrow">Follow Up</p>
+                <h3>追问与补充</h3>
+              </div>
+              <button class="ghost" type="button" aria-label="关闭追问面板" @click="followUpOpen = false">
+                关闭
+              </button>
+            </div>
+
             <p class="muted">选择一个追问方向，或者写下你想补充的背景。当前版本仅用于整理思路，不会写入保存记录。</p>
 
             <div class="prompt-chips">
@@ -352,18 +494,6 @@ async function exportReading() {
               <label for="reader-note">补充说明</label>
               <textarea id="reader-note" v-model="readerNote" placeholder="例如：我更想知道这件事接下来怎么行动。" />
             </div>
-
-            <p class="muted">{{ cardSummary(reading) }}</p>
-
-            <div class="saved-actions">
-              <NuxtLink v-if="!storageError" :to="`/readings/${reading.id}`">
-                <button class="primary" type="button">打开保存记录</button>
-              </NuxtLink>
-              <button type="button" :disabled="exporting" @click="exportReading">
-                {{ exporting ? '生成中...' : '保存解读长图' }}
-              </button>
-            </div>
-            <p v-if="exportError" class="export-error">{{ exportError }}</p>
           </aside>
         </div>
       </div>
