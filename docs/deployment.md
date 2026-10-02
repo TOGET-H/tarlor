@@ -5,17 +5,21 @@
 目标：阿里云北京实例 `i-2ze8ug5ftv6n9pb2z6yy`，公网 IP `123.57.144.99`，Ubuntu 22.04，2 vCPU / 2 GiB。Docker Hub 连接超时，因此本次实际采用 **Node.js + systemd + Nginx**。下面的 Docker 方案仅作为替代方案保留，未实际运行。
 
 - Node.js：官方 v22.23.3 Linux x64 包，SHA256 校验通过，安装于 `/opt/node-v22.23.3-linux-x64`。
-- 源代码版本目录：`/opt/digital-oracle/releases/20261002`；当前符号链接：`/opt/digital-oracle/current`。
+- 源代码版本目录：`/opt/digital-oracle/releases/20261002-17332e4`；当前符号链接：`/opt/digital-oracle/current`，`RELEASE_COMMIT` 为 `17332e42e4c09fc2dbede39a2422252761e45622`。旧版本 `/opt/digital-oracle/releases/20261002` 保留。
 - 运行账号：`oracle`，systemd 单元：`/etc/systemd/system/digital-oracle.service`，已启用开机自启和失败重启。
 - 数据库：`/var/lib/digital-oracle/oracle.db`，独立于代码目录。
 - 模型环境变量：`/etc/digital-oracle.env`（root 专用权限），当前 API Key 为空，实际抽牌 provider 为 `mock`。
+- 语音：服务端 Edge TTS 已启用，默认云溪，冥想语速 `-15%`；通过 `NUXT_TTS_*` 配置，参见 [语音说明](speech.md)。无需模型 API Key，但依赖微软在线语音服务。
+- 发布备份：`/var/backups/digital-oracle/20261002-17332e4`，包含 SQLite 在线一致性备份、环境配置、Nginx 配置和旧版本路径；目录权限 `0700`。备份数据库完整性检查通过，含 78 张牌。
 - Nginx 配置：`/etc/nginx/conf.d/digital-oracle.conf`；80 端口代理至本机 `127.0.0.1:3000`。仓库对应文件为 `deploy/nginx-native.conf`。
 - 域名 `oracle.digitaloracle.asia` 仍使用原 Cloudflare 解析，未切换；ICP备案及阿里云接入状态未确认，HTTPS 尚未配置。
 - 经用户明确确认，安全组 `sg-2ze28bh30zu9m8pbw2ti` 已新增 TCP `80/80`、来源 `0.0.0.0/0` 的入站规则，规则 ID `sgr-2zegnqenh9ywzhfo0zv7`。原有规则保留，应用 3000 端口只监听本机。
 
-验证结果：Linux 生产构建完成；Nginx 配置校验通过；systemd 与 Nginx 均 active；服务器内首页、`/cards`、`/draw`、`/meditation`、`/api/cards` 均返回 200；牌库含 78 张牌；测试抽牌返回 200（模拟解读）；POST `/api/cards` 返回 403；服务重启后仍有 78 张牌。构建提示无法解析的中文文件名图片已通过服务器 HTTP 验证（200）。
+验证结果：该提交的 [GitHub CI](https://github.com/TOGET-H/tarlor/actions/runs/36967452749) 成功；服务器完成类型检查、AI/语音测试、Linux 生产构建、隔离数据库迁移和接口检查。AI 运行时配置覆盖与通道路由通过模拟上游验证；服务器真实 Edge TTS 返回 200、31,536 字节 MP3。正式服务切换后 Nginx 配置检查通过，systemd 与 Nginx 均 active，牌库仍有 78 张牌。
 
-公网地址：`http://123.57.144.99`。本机不经代理直接请求该地址，首页、牌库 API、冥想页均 200，返回 78 张牌；首页引用的 6 个 JS/CSS 资源全部 200；公网抽牌返回 1 张牌及模拟解读；公网 POST `/api/cards` 返回 403。浏览器自动读取页面超时，本轮未完成浏览器交互/视觉验收。真实 AI 调用和域名 HTTPS 尚未验收。
+公网地址：`http://123.57.144.99`。本机直接请求首页、`/draw`、`/cards`、`/meditation`、呼吸冥想页及其引用的 JS/CSS 均为 200；牌库返回 78 张牌，抽牌成功并返回 `source=mock`、`fallbackReason=CHANNEL_UNCONFIGURED`。公网 POST `/api/cards` 仍为 403；语音接口使用晓晓返回 200、`audio/mpeg`、20,592 字节，并通过 MP3 头部检查。线上浏览器自动读取超时，本轮线上验收范围为 HTTP/API；本地语音播放、暂停、继续、停止已验证。真实 AI 调用和域名 HTTPS 尚未验收。
+
+本次采用手动发布；GitHub 仍仅运行 CI，没有配置自动部署凭证。发布检查中修正了系统命令 PATH 和 Nginx 站点匹配；失败检查触发回退后才再次切换，最终状态为 `DEPLOYED`。检查 Nginx 时使用真实 IP URL，或用 curl 显式指定网站 Host；直接访问 `http://127.0.0.1/draw` 会命中默认站点而返回 404。发布脚本 PATH 应包含 `/usr/sbin`。
 
 运维命令（服务器）：
 
@@ -26,7 +30,7 @@ systemctl restart digital-oracle
 curl --fail -H 'Host: oracle.digitaloracle.asia' http://127.0.0.1/api/cards
 ```
 
-真实模型接入：已部署旧版本支持 `/etc/digital-oracle.env` 中的 `NUXT_SILICONFLOW_API_KEY`。发布新的通道抽象版本后，可统一使用 `NUXT_AI_*` 配置，参见 [AI 通道说明](ai-channels.md)，旧变量仍兼容。修改后重启服务，并用非敏感测试问题核对返回来源。不要把 API Key 写入仓库或前端。
+真实模型接入：已部署版本支持统一 `NUXT_AI_*` 配置，参见 [AI 通道说明](ai-channels.md)，旧 `NUXT_SILICONFLOW_API_KEY` 仍兼容。当前公开通道目录显示硅基流动、DeepSeek、GLM 均为 `unconfigured`。修改 `/etc/digital-oracle.env` 后重启服务，并用非敏感测试问题核对返回来源。不要把 API Key 写入仓库或前端。
 
 备份数据库：`sqlite3 /var/lib/digital-oracle/oracle.db ".backup '/已存在的备份目录/oracle.db'"`（需安装 sqlite3），或在短暂停止 `digital-oracle` 服务后复制数据库并重新启动。更新使用新版本目录、重新构建、切换 `current`，保留旧版本和数据库备份以便回退；不要覆盖或删除持久数据目录。
 
