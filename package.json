@@ -12,15 +12,19 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "test:ai": "tsx --test tests/ai.test.ts",
+    "test:speech": "tsx --test tests/speech.test.ts tests/tts.test.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
+    "edge-tts-universal": "1.4.0",
     "nuxt": "^4.0.0",
     "vue": "^3.5.0",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@types/node": "^22",
     "prisma": "^6.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",

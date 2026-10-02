@@ -1,0 +1,19 @@
+冥想功能恢复记录（2026-10-01）
+来源：https://oracle.digitaloracle.asia/meditation
+配置与时间计算：/_nuxt/DobFq1n7.js
+练习选择页：/_nuxt/Dsnam4MQ.js
+播放器与五种动画：/_nuxt/Cc1TkpMV.js
+样式：/_nuxt/entry.CALyWj69.css
+
+未获得原始 source map；Vue / TypeScript 文件依据已部署代码整理，不是原始文件逐字恢复。
+配置、文案、阶段比例、身体扫描部位顺序与原部署数据一致。
+包含 3/5/10 分钟、计时、暂停继续、提示音、结束确认、完成与重练。
+练习不写数据库或本地持久记录。
+线上移动端导航样式仅应用于冥想路由；补充标准 backdrop-filter:none 避免旧样式使固定导航局限于页头。
+
+验证：配置、时长参数、暂停、完成边界、阶段与身体部位共 420 项线上代码对照通过。
+浏览器跑完 3 分钟练习，验证暂停计时、继续、静音、退出确认、完成及重新练习。
+所有五种路由、无效练习和时长重定向通过 HTTP 检查。
+构建与类型检查通过；仓库原有 vue-router/volar 插件路径警告仍存在。
+原始部署资源及 SHA256 清单位于仓库上级 cloudflare-recovery 目录。
+以上为 2026-10-01 本地恢复时的验收记录；后续发布情况见 docs/deployment.md。

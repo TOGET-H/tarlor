@@ -25,6 +25,10 @@ export type Interpretation = {
   provider: string
   content: string
   createdAt: string
+  channel?: string
+  model?: string | null
+  source?: 'ai' | 'mock'
+  fallbackReason?: string
 }
 
 export type Reading = {

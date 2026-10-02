@@ -2,6 +2,8 @@ import { createError, readBody } from 'h3'
 import { buildInterpretation } from '../../services/interpretation'
 import { requiredString, validateSpreadType } from '../../utils/validation'
 import { prisma } from '../../utils/prisma'
+import { useAiGateway, aiHttpError } from '../../utils/ai'
+import { AiError } from '../../ai/errors'
 
 const spreadPositions = {
   single: ['single'],
@@ -9,12 +11,6 @@ const spreadPositions = {
 } as const
 
 type SpreadType = keyof typeof spreadPositions
-
-type SiliconFlowRuntimeConfig = {
-  siliconflowApiKey?: string
-  siliconflowModel?: string
-  siliconflowApiUrl?: string
-}
 
 function shuffle<T>(items: T[]) {
   return [...items].sort(() => Math.random() - 0.5)
@@ -29,11 +25,22 @@ function createLocalReadingId() {
 }
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig(event) as unknown as SiliconFlowRuntimeConfig
   const body = await readBody(event)
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid request body' })
+  }
   const question = requiredString(body.question, 'question')
   const spreadType = validateSpreadType(body.spreadType) as SpreadType
   const positions = spreadPositions[spreadType]
+  if (body.channel !== undefined && (typeof body.channel !== 'string' || !body.channel.trim())) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid AI channel' })
+  }
+  const channel = body.channel?.trim() as string | undefined
+  const ai = useAiGateway(event)
+  try { ai.selectChannel(channel) } catch (error) {
+    if (error instanceof AiError) throw aiHttpError(error)
+    throw error
+  }
 
   const cards = await prisma.tarotCard.findMany()
 
@@ -52,10 +59,9 @@ export default defineEventHandler(async (event) => {
     card
   }))
 
-  const interpretation = await buildInterpretation(question, spreadType, drawnCards, {
-    apiKey: config.siliconflowApiKey,
-    model: config.siliconflowModel,
-    apiUrl: config.siliconflowApiUrl
+  const interpretation = await buildInterpretation(question, spreadType, drawnCards, { ai, channel }).catch(error => {
+    if (error instanceof AiError) throw aiHttpError(error)
+    throw error
   })
   const createdAt = new Date().toISOString()
   const readingId = createLocalReadingId()
@@ -77,8 +83,7 @@ export default defineEventHandler(async (event) => {
     interpretations: [
       {
         id: readingId + drawnCards.length + 1,
-        provider: interpretation.provider,
-        content: interpretation.content,
+        ...interpretation,
         createdAt
       }
     ]

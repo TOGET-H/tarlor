@@ -1,10 +1,6 @@
-const env = (
-  globalThis as typeof globalThis & {
-    process?: {
-      env?: Record<string, string | undefined>
-    }
-  }
-).process?.env ?? {}
+import { aiRuntimeDefaults } from './server/ai/config'
+import { ttsRuntimeDefaults } from './server/tts/config'
+import { createRequire } from 'node:module'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-06-24',
@@ -19,13 +15,19 @@ export default defineNuxtConfig({
   dir: {
     public: 'public'
   },
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/meditation.css'],
   runtimeConfig: {
-    siliconflowApiKey: env.SILICONFLOW_API_KEY || '',
-    siliconflowModel: env.SILICONFLOW_MODEL || 'Pro/zai-org/GLM-4.7',
-    siliconflowApiUrl: env.SILICONFLOW_API_URL || 'https://api.siliconflow.cn/v1/chat/completions'
+    tts: ttsRuntimeDefaults,
+    ai: aiRuntimeDefaults,
+    // Keep legacy NUXT_SILICONFLOW_* runtime overrides during migration.
+    siliconflowApiKey: '',
+    siliconflowModel: '',
+    siliconflowApiUrl: ''
   },
   devtools: { enabled: false },
+  nitro: {
+    externals: { external: ['edge-tts-universal'], traceInclude: [createRequire(import.meta.url).resolve('edge-tts-universal')] }
+  },
   typescript: {
     typeCheck: true
   }

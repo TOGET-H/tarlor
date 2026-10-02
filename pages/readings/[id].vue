@@ -197,6 +197,7 @@ async function exportReading() {
           <p class="eyebrow">Interpretation</p>
           <h2>解读内容</h2>
           <p class="interpretation">{{ latestInterpretation(reading) }}</p>
+          <SpeechReader :text="latestInterpretation(reading)" />
         </article>
       </div>
     </div>

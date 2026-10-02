@@ -1,0 +1,272 @@
+{
+  "practices": [
+    {
+      "id": "breath",
+      "label": "呼吸冥想",
+      "englishLabel": "Breath",
+      "category": "focus",
+      "categoryLabel": "专注类冥想",
+      "goals": [
+        "concentrate",
+        "relax"
+      ],
+      "description": "观察气息自然进出，把注意力一次次带回呼吸。",
+      "preparation": "坐在一个可以保持稳定的姿势，不需要控制呼吸。",
+      "visual": "breath",
+      "stages": [
+        {
+          "key": "arrive",
+          "startRatio": 0,
+          "title": "让身体安定下来",
+          "guidance": "找到一个舒服的姿势，让注意力慢慢回到这里。"
+        },
+        {
+          "key": "notice",
+          "startRatio": 0.16,
+          "title": "观察呼吸",
+          "guidance": "感受气息自然地进入、离开，不必改变它。"
+        },
+        {
+          "key": "return",
+          "startRatio": 0.72,
+          "title": "走神了，就回到呼吸",
+          "guidance": "注意力离开时不必责备自己，发现它，然后轻轻回来。"
+        },
+        {
+          "key": "close",
+          "startRatio": 0.92,
+          "title": "准备结束练习",
+          "guidance": "感受此刻的状态，再用一两个自然呼吸结束。"
+        }
+      ],
+      "durations": [
+        3,
+        5,
+        10
+      ]
+    },
+    {
+      "id": "mantra",
+      "label": "持咒冥想",
+      "englishLabel": "Mantra",
+      "category": "focus",
+      "categoryLabel": "专注类冥想",
+      "goals": [
+        "concentrate",
+        "relax"
+      ],
+      "description": "随着短句的节奏安住心神，听见每一次默念之间的停顿。",
+      "preparation": "让肩膀和下颌松开，准备在心中默念固定短句。",
+      "visual": "mantra",
+      "mantra": "此刻，我在这里",
+      "stages": [
+        {
+          "key": "arrive",
+          "startRatio": 0,
+          "title": "让内在安静下来",
+          "guidance": "先听一听周围和心里的声音，不需要赶走任何东西。"
+        },
+        {
+          "key": "repeat",
+          "startRatio": 0.16,
+          "title": "此刻，我在这里",
+          "guidance": "在心中缓慢默念，听见每个字，也听见字与字之间的停顿。"
+        },
+        {
+          "key": "return",
+          "startRatio": 0.72,
+          "title": "再次回到这句话",
+          "guidance": "发现思绪离开时，只需重新默念：此刻，我在这里。"
+        },
+        {
+          "key": "close",
+          "startRatio": 0.92,
+          "title": "让声音慢慢停下",
+          "guidance": "停止默念，留意短句结束后留下的安静。"
+        }
+      ],
+      "durations": [
+        3,
+        5,
+        10
+      ]
+    },
+    {
+      "id": "focus",
+      "label": "观物冥想",
+      "englishLabel": "Soft Focus",
+      "category": "focus",
+      "categoryLabel": "专注类冥想",
+      "goals": [
+        "concentrate"
+      ],
+      "description": "把视线安放在中央柔和光点，观察明暗与边缘的细微变化。",
+      "preparation": "保持自然坐姿，让视线柔和，不必紧盯光点。",
+      "visual": "focus",
+      "stages": [
+        {
+          "key": "arrive",
+          "startRatio": 0,
+          "title": "让视线柔和下来",
+          "guidance": "看向中央光点，不用紧盯，也不用调整坐姿去追随它。"
+        },
+        {
+          "key": "notice",
+          "startRatio": 0.16,
+          "title": "观察光点",
+          "guidance": "留意它的亮度、边缘，以及光与暗之间的过渡。"
+        },
+        {
+          "key": "return",
+          "startRatio": 0.72,
+          "title": "把视线带回来",
+          "guidance": "发现自己走神时，只需重新看见眼前这团柔和的光。"
+        },
+        {
+          "key": "close",
+          "startRatio": 0.92,
+          "title": "让眼睛休息",
+          "guidance": "移开视线或轻轻闭眼，感受视觉停止后的片刻安静。"
+        }
+      ],
+      "durations": [
+        3,
+        5,
+        10
+      ]
+    },
+    {
+      "id": "body-scan",
+      "label": "身体扫描",
+      "englishLabel": "Body Scan",
+      "category": "awareness",
+      "categoryLabel": "觉察 / 正念",
+      "goals": [
+        "relax",
+        "observe"
+      ],
+      "description": "从头到脚逐步觉察身体感受，不要求自己立刻放松。",
+      "preparation": "找到稳定姿势，让身体被椅子或地面承托。",
+      "visual": "body-scan",
+      "stages": [
+        {
+          "key": "arrive",
+          "startRatio": 0,
+          "title": "先感受整体",
+          "guidance": "让身体被椅子或地面承托，注意此刻的重量。"
+        },
+        {
+          "key": "scan",
+          "startRatio": 0.12,
+          "title": "从头部向下觉察",
+          "guidance": "不需要放松或修正，只留意每个区域传来的感觉。"
+        },
+        {
+          "key": "whole",
+          "startRatio": 0.82,
+          "title": "回到全身",
+          "guidance": "把刚才的觉察放在一起，感受身体作为一个整体。"
+        },
+        {
+          "key": "close",
+          "startRatio": 0.94,
+          "title": "准备结束练习",
+          "guidance": "保留一点安静，再慢慢睁开眼睛或回到工作。"
+        }
+      ],
+      "bodyRegions": {
+        "3": [
+          "head",
+          "upper",
+          "lower",
+          "whole"
+        ],
+        "5": [
+          "head-neck",
+          "shoulders-arms",
+          "chest-belly",
+          "hips-legs",
+          "feet",
+          "whole"
+        ],
+        "10": [
+          "head-neck",
+          "left-arm",
+          "right-arm",
+          "chest-belly",
+          "back",
+          "left-leg",
+          "right-leg",
+          "feet",
+          "whole"
+        ]
+      },
+      "durations": [
+        3,
+        5,
+        10
+      ]
+    },
+    {
+      "id": "thoughts",
+      "label": "正念观察念头",
+      "englishLabel": "Open Awareness",
+      "category": "awareness",
+      "categoryLabel": "觉察 / 正念",
+      "goals": [
+        "observe"
+      ],
+      "description": "像看流水一样看见念头升起和消失，不跟随它继续思考。",
+      "preparation": "允许任何念头出现，只需要知道“这是一个念头”。",
+      "visual": "thoughts",
+      "stages": [
+        {
+          "key": "arrive",
+          "startRatio": 0,
+          "title": "允许念头出现",
+          "guidance": "不需要让头脑变空，只需要准备看见接下来出现的内容。"
+        },
+        {
+          "key": "notice",
+          "startRatio": 0.14,
+          "title": "看见一个念头",
+          "guidance": "它可能是回忆、计划或感受。只在心中知道：这是一个念头。"
+        },
+        {
+          "key": "release",
+          "startRatio": 0.7,
+          "title": "不跟随，也不推开",
+          "guidance": "让它像光影一样经过，再把注意力放回此刻的身体。"
+        },
+        {
+          "key": "close",
+          "startRatio": 0.92,
+          "title": "回到眼前",
+          "guidance": "听见周围的声音，感受身体与座椅的接触。"
+        }
+      ],
+      "durations": [
+        3,
+        5,
+        10
+      ]
+    }
+  ],
+  "goals": [
+    {
+      "value": "concentrate",
+      "label": "专注",
+      "description": "把注意力放在一个清晰对象上"
+    },
+    {
+      "value": "relax",
+      "label": "放松",
+      "description": "让身体和节奏慢下来"
+    },
+    {
+      "value": "observe",
+      "label": "觉察",
+      "description": "看见念头和感受，不急着评判"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[Unit]
+Description=Digital Oracle Nuxt server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=oracle
+Group=oracle
+WorkingDirectory=/opt/digital-oracle/current
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+Environment=DATABASE_URL=file:/var/lib/digital-oracle/oracle.db
+Environment=PATH=/opt/node-v22.23.3-linux-x64/bin:/usr/bin:/bin
+EnvironmentFile=/etc/digital-oracle.env
+ExecStart=/opt/node-v22.23.3-linux-x64/bin/node deploy/start.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/digital-oracle
+
+[Install]
+WantedBy=multi-user.target

@@ -4,6 +4,10 @@ node_modules
 .data
 .DS_Store
 .env
+.env.*
+!.env.example
+!deploy/.env.production.example
+backups/
 prisma/dev.db
 prisma/dev.db-journal
 --host

@@ -40,6 +40,10 @@ jobs:
           pnpm exec nuxt prepare
       - name: Type check
         run: pnpm typecheck
+      - name: AI gateway contract tests (no external requests)
+        run: pnpm test:ai
+      - name: Speech playback lifecycle tests
+        run: pnpm test:speech
       - name: Build production server
         run: pnpm build
       - name: Smoke test with isolated SQLite database
@@ -50,6 +54,7 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           ORACLE_TEST_URL=http://127.0.0.1:3100 node scripts/smoke.mjs
+          node scripts/ai-runtime.mjs
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/oracle-ci.log 2>/dev/null || true

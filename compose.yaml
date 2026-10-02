@@ -1,0 +1,60 @@
+name: digital-oracle
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    init: true
+    environment:
+      DATABASE_URL: file:/app/data/oracle.db
+      NUXT_TTS_ENABLED: ${NUXT_TTS_ENABLED:-true}
+      NUXT_TTS_DEFAULT_CHANNEL: ${NUXT_TTS_DEFAULT_CHANNEL:-edge}
+      NUXT_TTS_VOICE: ${NUXT_TTS_VOICE:-zh-CN-YunxiNeural}
+      NUXT_TTS_RATE: ${NUXT_TTS_RATE:-+0%}
+      NUXT_TTS_MEDITATION_RATE: ${NUXT_TTS_MEDITATION_RATE:--15%}
+      NUXT_TTS_PITCH: ${NUXT_TTS_PITCH:-+0Hz}
+      NUXT_TTS_TIMEOUT_MS: ${NUXT_TTS_TIMEOUT_MS:-30000}
+      NUXT_TTS_PROXY: ${NUXT_TTS_PROXY:-}
+      NUXT_AI_DEFAULT_CHANNEL: ${NUXT_AI_DEFAULT_CHANNEL:-siliconflow}
+      NUXT_AI_FALLBACK_TO_MOCK: ${NUXT_AI_FALLBACK_TO_MOCK:-true}
+      NUXT_AI_CHANNELS_SILICONFLOW_API_KEY: ${NUXT_AI_CHANNELS_SILICONFLOW_API_KEY:-}
+      NUXT_AI_CHANNELS_SILICONFLOW_API_URL: ${NUXT_AI_CHANNELS_SILICONFLOW_API_URL:-}
+      NUXT_AI_CHANNELS_SILICONFLOW_MODEL: ${NUXT_AI_CHANNELS_SILICONFLOW_MODEL:-}
+      NUXT_AI_CHANNELS_DEEPSEEK_API_KEY: ${NUXT_AI_CHANNELS_DEEPSEEK_API_KEY:-}
+      NUXT_AI_CHANNELS_DEEPSEEK_API_URL: ${NUXT_AI_CHANNELS_DEEPSEEK_API_URL:-}
+      NUXT_AI_CHANNELS_DEEPSEEK_MODEL: ${NUXT_AI_CHANNELS_DEEPSEEK_MODEL:-}
+      NUXT_AI_CHANNELS_GLM_API_KEY: ${NUXT_AI_CHANNELS_GLM_API_KEY:-}
+      NUXT_AI_CHANNELS_GLM_API_URL: ${NUXT_AI_CHANNELS_GLM_API_URL:-}
+      NUXT_AI_CHANNELS_GLM_MODEL: ${NUXT_AI_CHANNELS_GLM_MODEL:-}
+      NUXT_SILICONFLOW_API_KEY: ${NUXT_SILICONFLOW_API_KEY:-}
+      NUXT_SILICONFLOW_MODEL: ${NUXT_SILICONFLOW_MODEL:-Pro/zai-org/GLM-4.7}
+      NUXT_SILICONFLOW_API_URL: ${NUXT_SILICONFLOW_API_URL:-https://api.siliconflow.cn/v1/chat/completions}
+    volumes:
+      - oracle-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/cards').then(async r=>{if(!r.ok||(await r.json()).length<78)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+  web:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${ORACLE_HTTP_PORT:-8080}:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+volumes:
+  oracle-data:

@@ -438,6 +438,7 @@ async function exportReading() {
               </button>
             </div>
             <p class="interpretation">{{ latestInterpretation(reading) }}</p>
+            <SpeechReader :text="latestInterpretation(reading)" />
 
             <p class="muted">{{ cardSummary(reading) }}</p>
 

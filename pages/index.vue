@@ -19,15 +19,15 @@
         <span class="ritual-btn">进入抽牌</span>
       </NuxtLink>
 
-      <button class="ritual-card card-meditation" type="button" aria-disabled="true">
+      <NuxtLink class="ritual-card card-meditation" to="/meditation">
         <span class="breath-ring" aria-hidden="true">
           <span class="ring-inner" />
         </span>
         <span class="card-label">Meditation</span>
         <span class="ritual-title">冥想</span>
-        <span class="card-desc">为之后的呼吸、静心和每日仪式预留入口。</span>
-        <span class="ritual-btn btn-disabled">即将开放</span>
-      </button>
+        <span class="card-desc">从五种专注与正念练习中，选择此刻适合你的方式。</span>
+        <span class="ritual-btn">进入冥想</span>
+      </NuxtLink>
     </div>
 
     <div class="mini-links">

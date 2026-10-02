@@ -1,0 +1,13 @@
+.git
+.env
+.env.*
+node_modules
+.nuxt
+.output
+.data
+data
+backups
+*.tar.gz
+prisma/*.db*
+fit-vision
+docs

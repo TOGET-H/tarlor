@@ -1,3 +1,6 @@
+import type { AiGateway } from '../ai/gateway'
+import { AiError } from '../ai/errors'
+
 type DrawnCard = {
   position: string
   orientation: string
@@ -10,26 +13,9 @@ type DrawnCard = {
   }
 }
 
-type SiliconFlowContentPart = {
-  type?: string
-  text?: string
-}
-
-type SiliconFlowResponse = {
-  choices?: Array<{
-    message?: {
-      content?: string | SiliconFlowContentPart[]
-    }
-  }>
-  error?: {
-    message?: string
-  }
-}
-
 type BuildInterpretationOptions = {
-  apiKey?: string
-  model?: string
-  apiUrl?: string
+  ai: AiGateway
+  channel?: string
 }
 
 const positionLabels: Record<string, string> = {
@@ -59,7 +45,7 @@ export function buildMockInterpretation(question: string, spreadType: string, ca
     return `${positionLabels[entry.position] ?? entry.position}：${entry.card.name}（${orientationLabels[entry.orientation] ?? entry.orientation}）指向：${meaning}`
   })
 
-  return `${intro}\n\n${lines.join('\n\n')}\n\n这是一段已保存的模拟解读。后续可以在服务层接入 AI 服务，而不需要改动抽牌 API 的数据结构。`
+  return `${intro}\n\n${lines.join('\n\n')}\n\n这是一段基于牌义生成的模拟解读，未调用真实 AI 模型。`
 }
 
 function cardPromptLines(cards: DrawnCard[]) {
@@ -79,21 +65,6 @@ function cardPromptLines(cards: DrawnCard[]) {
       entry.card.description ? `牌面说明：${entry.card.description}` : ''
     ].filter(Boolean).join('\n')
   }).join('\n\n')
-}
-
-function normalizeSiliconFlowContent(content: string | SiliconFlowContentPart[] | undefined) {
-  if (typeof content === 'string') {
-    return content.trim()
-  }
-
-  if (Array.isArray(content)) {
-    return content
-      .map((part) => part.text || '')
-      .join('')
-      .trim()
-  }
-
-  return ''
 }
 
 function buildSystemPrompt() {
@@ -144,75 +115,30 @@ export async function buildInterpretation(
   question: string,
   spreadType: string,
   cards: DrawnCard[],
-  options: BuildInterpretationOptions = {}
+  options: BuildInterpretationOptions
 ) {
-  const fallback = buildMockInterpretation(question, spreadType, cards)
-  const apiKey = options.apiKey?.trim()
-  const model = options.model?.trim() || 'Pro/zai-org/GLM-4.7'
-  const apiUrl = options.apiUrl?.trim() || 'https://api.siliconflow.cn/v1/chat/completions'
-
-  if (!apiKey) {
-    return {
-      provider: 'mock',
-      content: fallback
-    }
-  }
-
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${apiKey}`
-  }
-
+  // Selection errors are never disguised as a successful mock response.
+  const channel = options.ai.selectChannel(options.channel)
   try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        model,
-        messages: [
-          {
-            role: 'system',
-            content: buildSystemPrompt()
-          },
-          {
-            role: 'user',
-            content: buildPrompt(question, spreadType, cards)
-          }
-        ],
-        temperature: 0.78,
-        max_tokens: 900,
-        stream: false
-      })
+    const result = await options.ai.generateText({
+      channel: channel.id,
+      messages: [
+        { role: 'system', content: buildSystemPrompt() },
+        { role: 'user', content: buildPrompt(question, spreadType, cards) }
+      ]
     })
-
-    const data = await response.json() as SiliconFlowResponse
-
-    if (!response.ok) {
-      throw new Error(
-        JSON.stringify({
-          model,
-          status: response.status,
-          message: data.error?.message || `SiliconFlow request failed with ${response.status}`
-        })
-      )
-    }
-
-    const content = normalizeSiliconFlowContent(data.choices?.[0]?.message?.content)
-
-    if (!content) {
-      throw new Error('SiliconFlow returned an empty interpretation')
-    }
-
     return {
-      provider: model,
-      content
+      provider: result.model, // Preserve the existing response contract.
+      channel: result.channel, model: result.model, source: 'ai' as const,
+      content: result.content
     }
   } catch (error) {
-    console.error('SiliconFlow interpretation failed, falling back to mock.', error)
-
+    if (!(error instanceof AiError) || !options.ai.fallbackToMock
+        || ['INVALID_CONFIG', 'CHANNEL_DISABLED', 'UNKNOWN_CHANNEL'].includes(error.code)) throw error
     return {
-      provider: 'mock',
-      content: fallback
+      provider: 'mock', channel: channel.id, model: null, source: 'mock' as const,
+      fallbackReason: error.code,
+      content: buildMockInterpretation(question, spreadType, cards)
     }
   }
 }
